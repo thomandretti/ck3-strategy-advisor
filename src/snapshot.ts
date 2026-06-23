@@ -17,8 +17,9 @@ function formatDate(v: unknown): string {
   return str(v).replace(/"/g, "");
 }
 
-export async function buildSnapshot(gamestate: Buffer, _loc: Localizer): Promise<Snapshot> {
+export async function buildSnapshot(gamestate: Buffer, loc: Localizer): Promise<Snapshot> {
   return queryGamestate(gamestate, (q: Query): Snapshot => {
+    loc.setTraitLookup((q.at("/traits_lookup") as string[]) ?? null);
     const date = formatDate(q.at("/date"));
     const playerId = q.at("/played_character/character");
     const alive = `/living/${playerId}/alive_data`;
