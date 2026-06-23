@@ -1,0 +1,4 @@
+node_modules/
+dist/
+*.ck3
+/tmp/
