@@ -1,0 +1,28 @@
+date=1130.7.24
+meta_data={
+	version="1.8.1"
+	meta_date=1130.7.24
+	meta_player_name="Emperor Jenec"
+	meta_title_name="The Holy Roman Empire"
+	meta_player_tier=5
+	meta_house_name="Přemyslid"
+}
+played_character={
+	character=33564206
+	player=1
+}
+living={
+33564206={
+	first_name="Jenec"
+	dynasty_house=4872
+	traits={ 75 55 53 }
+	alive_data={
+		gold=124.5
+		income=12.3
+		prestige={ currency=400.0 accumulated=820.0 }
+		piety={ currency=100.0 accumulated=310.0 }
+		health=4.2
+		stress=15
+	}
+}
+}
