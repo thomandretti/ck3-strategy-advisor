@@ -17,6 +17,9 @@ landed_titles={
 1={ key="e_hre" name="The Holy Roman Empire" holder=33564206 claim={ 22222 } de_jure_vassals={ 3 } }
 2={ key="k_bohemia" name="Bohemia" holder=33564206 de_jure_liege=1 }
 3={ key="k_lotharingia" name="Lotharingia" }
+4={ key="k_scotland" name="Alba" holder=40000 }
+5={ key="k_france" name="France" holder=40001 }
+6={ key="d_scotland" name="Lothian" holder=40002 de_facto_liege=4 }
 }
 }
 living={
@@ -54,6 +57,24 @@ living={
 	alive_data={ gold=5.0 }
 	landed_data={ domain={ 2 } strength_for_liege=500 }
 }
+40000={
+	first_name="Causantin"
+	skill={ 5 7 4 3 6 8 }
+	alive_data={ gold=88.0 prestige={ currency=200.0 accumulated=500.0 } }
+	landed_data={ domain={ 4 } strength=6000.0 current_strength=5500.0 levy=4000.0 }
+}
+40001={
+	first_name="Philippe"
+	skill={ 6 5 5 4 4 5 }
+	alive_data={ gold=50.0 }
+	landed_data={ domain={ 5 } strength=7000.0 current_strength=7000.0 }
+}
+40002={
+	first_name="Domnall"
+	skill={ 2 2 2 2 2 2 }
+	alive_data={ gold=3.0 }
+	landed_data={ domain={ 6 } strength_for_liege=200 }
+}
 }
 wars={
 active_wars={
@@ -64,11 +85,18 @@ active_wars={
 	attacker={ participants={ { character=33564206 } } ticking_war_score=12.5 }
 	defender={ participants={ { character=22222 } } ticking_war_score=3.0 }
 }
+9002={
+	start_date=1129.5.1
+	casus_belli={ type="conquest_cb" targeted_titles={ 6 } }
+	attacker={ participants={ { character=40000 } } ticking_war_score=5.0 }
+	defender={ participants={ { character=99999 } } ticking_war_score=2.0 }
+}
 }
 }
 relations={
 active_relations={
 { first=33564206 second=22222 alliances={ { allied_through_0=33564206 allied_through_1=22222 } } truce_0={ date=1135.6.1 result="victory" } }
+{ first=40000 second=40001 alliances={ { allied_through_0=40000 allied_through_1=40001 } } }
 }
 }
 opinions={
