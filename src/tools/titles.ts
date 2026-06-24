@@ -3,8 +3,8 @@ import type { SnapshotCache } from "../cache.js";
 import type { HeldTitle } from "../extract/titles.js";
 import { stamp, truncate } from "../format.js";
 
-function plural(n: number, singular: string): string {
-  return `${n} ${singular}${n === 1 ? "" : "s"}`;
+function plural(n: number, singular: string, pluralForm = `${singular}s`): string {
+  return `${n} ${n === 1 ? singular : pluralForm}`;
 }
 
 function renderTier(body: string, heading: string, titles: HeldTitle[], cap: number): string {
@@ -37,9 +37,9 @@ export function registerTitlesTool(server: McpServer, cache: SnapshotCache) {
       const counts = [
         plural(t.empires.length, "empire"),
         plural(t.kingdoms.length, "kingdom"),
-        plural(t.duchies.length, "duchy").replace("duchys", "duchies"),
-        plural(t.counties.length, "county").replace("countys", "counties"),
-        plural(t.baronies.length, "barony").replace("baronys", "baronies"),
+        plural(t.duchies.length, "duchy", "duchies"),
+        plural(t.counties.length, "county", "counties"),
+        plural(t.baronies.length, "barony", "baronies"),
       ].filter((c) => !c.startsWith("0 "));
 
       let body = `# Held titles — ${counts.length ? counts.join(", ") : "none"}\n`;
