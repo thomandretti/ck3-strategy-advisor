@@ -232,3 +232,30 @@ These field mappings were verified through jomini against two real text saves: E
 5. Array sub-elements (e.g. `/alive_data/claim/0`) return `undefined` via JSON pointer — use JavaScript array indexing after fetching the array.
 6. **pretender vs claim:** `alive_data/pretender` lists title IDs the character is actively contesting; `alive_data/claim` lists all held claims regardless of pressing status. A character can have claims without being a pretender and vice versa.
 7. Title IDs in `alive_data/claim[n].title` reference the same numeric namespace as `/landed_titles/landed_titles/{id}` keys.
+
+---
+
+## ADDENDUM: gaps resolved for Tasks 10 & 13 (controller-verified)
+
+### Men-at-arms (Task 10)
+There is NO clean per-character men-at-arms breakdown in the gamestate.
+`/living/{player}/landed_data/men_at_arms` = undefined; the raw `men_at_arms={ gold=... }`
+inside the player block is upkeep cost only. Regiments live in the global `/armies`
+(`{regiments, army_regiments, armies, name_manager}`) and `/units` keyed by unit id —
+not cheaply attributable to a character. **Task 10 reports mobilisation TOTALS
+(`landed_data/levy`, `strength`, `current_strength`, `strength_without_hires`) and
+states MAA is not broken out. Do not fabricate an MAA breakdown.**
+
+### Vassal enumeration (Task 13)
+- Player's direct vassal contracts: `/living/{player}/landed_data/vassal_contracts` = array of contract IDs (e.g. 56 entries).
+- Resolve each: `/vassal_contracts/active/{contractId}` -> object `{ vassal: <charId>, liege: <charId>, date: Date, levels: int[] }`. `vassal` is the vassal character id; `liege` should equal the player.
+- `/vassal_contracts/active` is an object keyed by contract id (numeric-string keys).
+- Rank vassals by `/living/{vassalId}/landed_data/strength_for_liege` (number; troops the vassal owes the liege). Fallback `/living/{vassalId}/landed_data/strength`.
+- Vassal opinion OF player: single pass over `/opinions/active_opinions` (array ~85k–95k), keep entries where `owner === vassalId && target === {player}`, sum `temporary_opinion.value` (+ any base). Only scan once; keep only matches for the top-N vassals.
+- Council seat: vassalId present in `/living/{player}/landed_data/council`.
+- Faction membership: vassalId present in any `/faction_manager/factions/{id}/members[*].character` where that faction's `target === {player}`.
+
+### Scoped-out / stated-limitation features
+- **Marriage candidates (Task 12):** NOT mapped in the gamestate — scope OUT; the plan hedges "if cheaply available".
+- **Strong vs weak claims (Task 14):** NOT stored. Report claims as pressed/unpressed only (from `alive_data/claim[*].pressed`), and say so in the tool description.
+- **Character name search (Task 9 find_character):** `first_name` is CK3 loc-encoded (e.g. "CrI_chA_n" for Críchán) and the game dir may be null, so display-name search is BEST-EFFORT substring over the raw + resolved name. Document this limitation in the tool description.
