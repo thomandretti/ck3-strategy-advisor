@@ -9,3 +9,17 @@ export function resolveTitleName(q: Query, loc: Localizer, titleId: number): str
   if (key !== undefined) return loc.resolve(key);
   return String(titleId);
 }
+
+export type TitleTier = "empire" | "kingdom" | "duchy" | "county" | "barony" | "other";
+
+// Tier is encoded in the title key's prefix (e_/k_/d_/c_/b_).
+export function titleTierFromKey(key: string): TitleTier {
+  switch (key[0]) {
+    case "e": return "empire";
+    case "k": return "kingdom";
+    case "d": return "duchy";
+    case "c": return "county";
+    case "b": return "barony";
+    default: return "other";
+  }
+}
