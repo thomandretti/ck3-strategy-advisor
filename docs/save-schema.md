@@ -29,7 +29,7 @@ These field mappings were verified through jomini against two real text saves: E
 | `/living/{player}/traits` | array | Flat int array of trait IDs (enum keys into traits db) | `[75, 55, 53, 7, 23, 227]` |
 | `/living/{player}/skill` | array | Skill values in order: diplomacy, martial, stewardship, intrigue, learning, prowess | `[7, 9, 10, 7, 6, 7]` |
 | `/living/{player}/prowess_age` | number | Age-based prowess modifier (negative = penalty from aging) | `-11` |
-| `/living/{player}/alive_data/gold` | number | Current gold (treasury) | `2974.7568` |
+| `/living/{player}/alive_data/gold/value` | number | Current gold (treasury). NB: `gold` is an object `{ value }`, not a bare number — read `/value` | `2974.7568` |
 | `/living/{player}/alive_data/income` | number | Monthly income | `524.29583` |
 | `/living/{player}/alive_data/stress` | number | Current stress level (integer) | `55` |
 | `/living/{player}/alive_data/health` | number | Current health value | `2.39453` |

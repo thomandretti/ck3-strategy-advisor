@@ -31,7 +31,7 @@ living={
 	traits={ 0 1 2 }
 	skill={ 8 6 7 5 9 4 }
 	alive_data={
-		gold=124.5
+		gold={ value=124.5 }
 		income=12.3
 		prestige={ currency=400.0 accumulated=820.0 }
 		piety={ currency=100.0 accumulated=310.0 }
@@ -56,25 +56,25 @@ living={
 	dynasty_house=4872
 	traits={ 1 }
 	skill={ 3 3 3 3 3 3 }
-	alive_data={ gold=5.0 }
+	alive_data={ gold={ value=5.0 } }
 	landed_data={ domain={ 2 } strength_for_liege=500 }
 }
 40000={
 	first_name="Causantin"
 	skill={ 5 7 4 3 6 8 }
-	alive_data={ gold=88.0 prestige={ currency=200.0 accumulated=500.0 } }
+	alive_data={ gold={ value=88.0 } prestige={ currency=200.0 accumulated=500.0 } }
 	landed_data={ domain={ 4 } strength=6000.0 current_strength=5500.0 levy=4000.0 }
 }
 40001={
 	first_name="Philippe"
 	skill={ 6 5 5 4 4 5 }
-	alive_data={ gold=50.0 }
+	alive_data={ gold={ value=50.0 } }
 	landed_data={ domain={ 5 } strength=7000.0 current_strength=7000.0 }
 }
 40002={
 	first_name="Domnall"
 	skill={ 2 2 2 2 2 2 }
-	alive_data={ gold=3.0 }
+	alive_data={ gold={ value=3.0 } }
 	landed_data={ domain={ 6 } strength_for_liege=200 }
 }
 }

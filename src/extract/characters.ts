@@ -53,7 +53,7 @@ export function extractCharacter(q: Query, loc: Localizer, id: number): Characte
   const traits = traitIndices.map((idx) => loc.resolveTrait(idx));
 
   // Financial/status data
-  const gold = (q.at(`/living/${id}/alive_data/gold`) as number | undefined) ?? null;
+  const gold = (q.at(`/living/${id}/alive_data/gold/value`) as number | undefined) ?? null;
   const prestige = (q.at(`/living/${id}/alive_data/prestige/accumulated`) as number | undefined) ?? null;
   const piety = (q.at(`/living/${id}/alive_data/piety/accumulated`) as number | undefined) ?? null;
   const health = (q.at(`/living/${id}/alive_data/health`) as number | undefined) ?? null;

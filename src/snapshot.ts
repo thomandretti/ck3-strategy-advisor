@@ -29,7 +29,7 @@ export async function buildSnapshot(gamestate: Buffer, loc: Localizer): Promise<
       primaryTitle: str(q.at("/meta_data/meta_title_name")),
       tier: num(q.at("/meta_data/meta_player_tier")) ?? 0,
       house: str(q.at("/meta_data/meta_house_name")),
-      gold: num(q.at(`${alive}/gold`)),
+      gold: num(q.at(`${alive}/gold/value`)),
       prestige: num(q.at(`${alive}/prestige/accumulated`)),
       piety: num(q.at(`${alive}/piety/accumulated`)),
     };
