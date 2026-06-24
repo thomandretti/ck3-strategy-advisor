@@ -1,5 +1,7 @@
 # CK3 Strategy Advisor (MCP server)
 
+[![CI](https://github.com/thomandretti/ck3-strategy-advisor/actions/workflows/ci.yml/badge.svg)](https://github.com/thomandretti/ck3-strategy-advisor/actions/workflows/ci.yml)
+
 A local [Model Context Protocol](https://modelcontextprotocol.io) server that
 reads your **Crusader Kings III** save file and exposes your strategic situation
 to Claude as compact, curated tools. Ask Claude "what's my situation?" and it can
