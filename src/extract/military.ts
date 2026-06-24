@@ -1,6 +1,7 @@
 import type { Query } from "../parser.js";
 import type { Localizer } from "../localization.js";
 import { formatCk3Date } from "../format.js";
+import { resolveTitleName } from "./titleUtils.js";
 
 export interface War {
   playerSide: "attacker" | "defender";
@@ -23,16 +24,7 @@ function num(v: unknown): number | null {
   return typeof v === "number" ? v : null;
 }
 
-function titleName(q: Query, titleId: number): string | null {
-  const name = q.at(`/landed_titles/landed_titles/${titleId}/name`);
-  if (typeof name === "string") return name;
-  const key = q.at(`/landed_titles/landed_titles/${titleId}/key`);
-  if (typeof key === "string") return key;
-  return null;
-}
-
 export function extractMilitary(q: Query, loc: Localizer): MilitaryInfo {
-  void loc; // reserved for future localisation
   const playerId = q.at("/played_character/character") as number;
   const landedData = `/living/${playerId}/landed_data`;
 
@@ -74,7 +66,7 @@ export function extractMilitary(q: Query, loc: Localizer): MilitaryInfo {
 
       const targetedTitles = (cb?.["targeted_titles"] as number[] | undefined) ?? [];
       const firstTitleId = targetedTitles[0];
-      const targetTitle = firstTitleId !== undefined ? titleName(q, firstTitleId) : null;
+      const targetTitle = firstTitleId !== undefined ? resolveTitleName(q, loc, firstTitleId) : null;
 
       const attackerScore = num(attackerData?.["ticking_war_score"]) ?? 0;
       const defenderScore = num(defenderData?.["ticking_war_score"]) ?? 0;

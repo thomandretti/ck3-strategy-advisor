@@ -16,12 +16,11 @@ export function registerVassalsTool(server: McpServer, cache: SnapshotCache) {
       const snap = await cache.get();
       if ("error" in snap) return { isError: true, content: [{ type: "text", text: snap.error }] };
 
-      const { vassals } = snap;
+      const { vassals, vassalCount } = snap;
       const { shown, note } = truncate(vassals, 8);
       const k = shown.length;
-      const n = vassals.length;
 
-      let body = `# Top vassals (showing ${k} of ${n})\n`;
+      let body = `# Top vassals (showing ${k} of ${vassalCount})\n`;
       if (shown.length === 0) {
         body += "No direct vassals.\n";
       } else {

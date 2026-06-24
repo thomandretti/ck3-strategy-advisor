@@ -52,15 +52,16 @@ export function extractDiplomacy(q: Query, loc: Localizer): DiplomacyInfo {
       alliances.push({ id: otherId, name: resolveCharName(q, otherId) });
     }
 
-    // Truces — check both slots
-    for (const slot of ["truce_0", "truce_1"] as const) {
-      const truce = entry[slot] as Record<string, unknown> | undefined;
-      if (!truce || typeof truce !== "object") continue;
+    // Truces — emit at most ONE per relation entry (prefer truce_0, fall back to truce_1)
+    const truceSlot =
+      (entry["truce_0"] as Record<string, unknown> | undefined) ??
+      (entry["truce_1"] as Record<string, unknown> | undefined);
+    if (truceSlot && typeof truceSlot === "object") {
       truces.push({
         id: otherId,
         name: resolveCharName(q, otherId),
-        until: formatCk3Date(truce["date"]),
-        result: typeof truce["result"] === "string" ? truce["result"] : "?",
+        until: formatCk3Date(truceSlot["date"]),
+        result: typeof truceSlot["result"] === "string" ? truceSlot["result"] : "?",
       });
     }
   }

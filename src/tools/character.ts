@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { SnapshotCache } from "../cache.js";
 import { extractCharacter, findCharacters } from "../extract/characters.js";
+import { resolveTitleName } from "../extract/titleUtils.js";
 import { stamp, truncate } from "../format.js";
 
 export function registerCharacterTools(server: McpServer, cache: SnapshotCache) {
@@ -16,29 +17,37 @@ export function registerCharacterTools(server: McpServer, cache: SnapshotCache) 
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async ({ name }: { name: string }) => {
-      const gs = await cache.rawGamestate();
-      if ("error" in gs) return { isError: true, content: [{ type: "text", text: gs.error }] };
+      // FIX B: fetch snap before zero-match check so we can stamp it
+      const snap = await cache.get();
+      if ("error" in snap) return { isError: true, content: [{ type: "text", text: snap.error }] };
 
-      const all = findCharacters(gs, name);
+      // FIX D: use pre-converted text (once per save, not per call)
+      const textResult = await cache.rawGamestateText();
+      if (typeof textResult !== "string") return { isError: true, content: [{ type: "text", text: textResult.error }] };
+      const text = textResult;
+
+      const all = findCharacters(text, name);
       if (all.length === 0) {
-        return { content: [{ type: "text", text: `No living character matching '${name}'.` }] };
+        // FIX B: stamp the zero-match response
+        return { content: [{ type: "text", text: stamp(snap, `No living character matching '${name}'.`) }] };
       }
 
       const { shown, note } = truncate(all, 10);
 
-      // Enrich primaryTitle for shown matches only (surgical per-id query)
-      const snap = await cache.get();
-      if ("error" in snap) return { isError: true, content: [{ type: "text", text: snap.error }] };
-      await cache.query((q) => {
+      // FIX I: check enrichment query result
+      const enr = await cache.query((q) => {
         for (const m of shown) {
           const domain = (q.at(`/living/${m.id}/landed_data/domain`) as number[] | undefined) ?? [];
           const titleId = domain[0];
           if (titleId !== undefined) {
-            const titleName = q.at(`/landed_titles/landed_titles/${titleId}/name`) as string | undefined;
-            m.primaryTitle = titleName ?? null;
+            // FIX C: use shared resolver for loc fallback
+            m.primaryTitle = resolveTitleName(q, cache.loc, titleId);
           }
         }
       });
+      if (enr && typeof enr === "object" && "error" in enr) {
+        return { isError: true, content: [{ type: "text", text: (enr as { error: string }).error }] };
+      }
 
       const lines = shown.map((m) => `- ${m.name} (id ${m.id}) — ${m.primaryTitle ?? "no title"}`).join("\n");
       return { content: [{ type: "text", text: stamp(snap, lines + note) }] };
@@ -68,7 +77,8 @@ export function registerCharacterTools(server: McpServer, cache: SnapshotCache) 
 
       const c = result as import("../extract/characters.js").CharacterInfo | null;
       if (!c) {
-        return { content: [{ type: "text", text: `No character with id ${id}.` }] };
+        // FIX B: stamp character not-found response
+        return { content: [{ type: "text", text: stamp(snap, `No character with id ${id}.`) }] };
       }
       const skillLine =
         `Dip ${c.skills.diplomacy} | Mar ${c.skills.martial} | Stw ${c.skills.stewardship} | ` +

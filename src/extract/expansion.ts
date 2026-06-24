@@ -1,6 +1,7 @@
 import type { Query } from "../parser.js";
 import type { Localizer } from "../localization.js";
 import type { War } from "./military.js";
+import { resolveTitleName } from "./titleUtils.js";
 
 export interface ClaimRef { title: string; pressed: boolean }
 export interface ExpansionInfo {
@@ -10,16 +11,7 @@ export interface ExpansionInfo {
   warTargets: { title: string; cbType: string }[];
 }
 
-function resolveTitleName(q: Query, titleId: number): string {
-  const name = q.at(`/landed_titles/landed_titles/${titleId}/name`);
-  if (typeof name === "string") return name;
-  const key = q.at(`/landed_titles/landed_titles/${titleId}/key`);
-  if (typeof key === "string") return key;
-  return String(titleId);
-}
-
 export function extractExpansion(q: Query, loc: Localizer, wars: War[]): ExpansionInfo {
-  void loc; // reserved for future localisation
 
   const playerId = q.at("/played_character/character") as number;
   const aliveData = `/living/${playerId}/alive_data`;
@@ -27,7 +19,7 @@ export function extractExpansion(q: Query, loc: Localizer, wars: War[]): Expansi
   // Claims: alive_data/claim is an array of { title, pressed? }
   const rawClaims = (q.at(`${aliveData}/claim`) as Array<Record<string, unknown>> | undefined) ?? [];
   const claims: ClaimRef[] = rawClaims.map((c) => ({
-    title: resolveTitleName(q, c["title"] as number),
+    title: resolveTitleName(q, loc, c["title"] as number),
     pressed: c["pressed"] === true,
   }));
   const pressedCount = claims.filter((c) => c.pressed).length;
@@ -41,7 +33,7 @@ export function extractExpansion(q: Query, loc: Localizer, wars: War[]): Expansi
 
   const deJureUnheld = deJureVassals
     .filter((tid) => q.at(`/landed_titles/landed_titles/${tid}/holder`) === undefined)
-    .map((tid) => ({ title: resolveTitleName(q, tid) }));
+    .map((tid) => ({ title: resolveTitleName(q, loc, tid) }));
 
   // War targets: reuse already-extracted wars
   const warTargets = wars.map((w) => ({

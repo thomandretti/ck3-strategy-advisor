@@ -12,4 +12,5 @@ test("extracts vassals and factions with cross-referenced flags", async () => {
   expect(snap.vassals).toEqual([
     { id: 22222, name: "Adela", strengthForLiege: 500, opinion: -30, councilSeat: true, inFaction: true },
   ]);
+  expect(snap.vassalCount).toBe(1);
 });

@@ -32,6 +32,8 @@ export function extractFactions(q: Query, loc: Localizer): { factions: FactionIn
 
     // Collect character member ids
     const members = f["members"] as Array<Record<string, unknown>> | undefined;
+    const titleMembers = f["title_members"] as unknown[] | undefined;
+    // FIX H: count title_members (counties) for peasant factions; only add character ids to memberIds
     let memberCount = 0;
     if (Array.isArray(members)) {
       memberCount = members.length;
@@ -39,6 +41,9 @@ export function extractFactions(q: Query, loc: Localizer): { factions: FactionIn
         const charId = m["character"];
         if (typeof charId === "number") memberIds.add(charId);
       }
+    } else if (Array.isArray(titleMembers)) {
+      memberCount = titleMembers.length;
+      // title_members are county ids, not character ids — do NOT add to memberIds
     }
 
     // Resolve leader name
@@ -63,7 +68,7 @@ export function extractFactions(q: Query, loc: Localizer): { factions: FactionIn
 }
 
 /** topN vassals by strengthForLiege; uses faction memberIds + single opinion pass */
-export function extractVassals(q: Query, loc: Localizer, factionMemberIds: Set<number>, topN = 8): VassalInfo[] {
+export function extractVassals(q: Query, loc: Localizer, factionMemberIds: Set<number>, topN = 8): { vassals: VassalInfo[]; total: number } {
   void loc;
   const playerId = q.at("/played_character/character") as number;
 
@@ -90,8 +95,9 @@ export function extractVassals(q: Query, loc: Localizer, factionMemberIds: Set<n
     entries.push({ id: vassalId, strength });
   }
 
-  // 3. Sort desc by strength, take topN
+  // 3. Sort desc by strength, take topN; record total before cap
   entries.sort((a, b) => b.strength - a.strength);
+  const total = entries.length;
   const topEntries = entries.slice(0, topN);
   const topIds = new Set(topEntries.map((e) => e.id));
 
@@ -115,7 +121,7 @@ export function extractVassals(q: Query, loc: Localizer, factionMemberIds: Set<n
   }
 
   // 6. Build final vassal list
-  return topEntries.map(({ id, strength }) => {
+  const vassals = topEntries.map(({ id, strength }) => {
     const raw = q.at(`/living/${id}/first_name`);
     const name = typeof raw === "string" ? raw : String(raw ?? id);
     return {
@@ -127,4 +133,5 @@ export function extractVassals(q: Query, loc: Localizer, factionMemberIds: Set<n
       inFaction: factionMemberIds.has(id),
     };
   });
+  return { vassals, total };
 }

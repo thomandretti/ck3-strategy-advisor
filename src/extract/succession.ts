@@ -1,5 +1,6 @@
 import type { Query } from "../parser.js";
 import type { Localizer } from "../localization.js";
+import { resolveTitleName } from "./titleUtils.js";
 
 export interface HeirRef { id: number; name: string }
 export interface SuccessionInfo {
@@ -30,7 +31,7 @@ export function extractSuccession(q: Query, loc: Localizer): SuccessionInfo {
 
   const primaryTitle: string =
     primaryTitleId !== null
-      ? String(q.at(`/landed_titles/landed_titles/${primaryTitleId}/name`) ?? "unknown")
+      ? resolveTitleName(q, loc, primaryTitleId)
       : "unknown";
 
   // Laws

@@ -1,5 +1,6 @@
 import type { Query } from "../parser.js";
 import type { Localizer } from "../localization.js";
+import { resolveTitleName } from "./titleUtils.js";
 
 export interface CharacterInfo {
   id: number;
@@ -26,14 +27,6 @@ export interface CharacterMatch {
   id: number;
   name: string;
   primaryTitle: string | null;
-}
-
-function titleName(q: Query, loc: Localizer, titleId: number): string {
-  const name = q.at(`/landed_titles/landed_titles/${titleId}/name`) as string | undefined;
-  if (name !== undefined) return name;
-  const key = q.at(`/landed_titles/landed_titles/${titleId}/key`) as string | undefined;
-  if (key !== undefined) return loc.resolve(key);
-  return String(titleId);
 }
 
 export function extractCharacter(q: Query, loc: Localizer, id: number): CharacterInfo | null {
@@ -69,12 +62,12 @@ export function extractCharacter(q: Query, loc: Localizer, id: number): Characte
   // Primary title from domain[0]
   const domain = (q.at(`/living/${id}/landed_data/domain`) as number[] | undefined) ?? [];
   const primaryTitleId = domain[0];
-  const primaryTitle = primaryTitleId !== undefined ? titleName(q, loc, primaryTitleId) : null;
+  const primaryTitle = primaryTitleId !== undefined ? resolveTitleName(q, loc, primaryTitleId) : null;
 
   // Claims
   const rawClaims = (q.at(`/living/${id}/alive_data/claim`) as Array<{ title: number; pressed?: boolean }> | undefined) ?? [];
   const claims = rawClaims.map((c) => ({
-    title: titleName(q, loc, c.title),
+    title: resolveTitleName(q, loc, c.title),
     pressed: c.pressed === true,
   }));
 
@@ -101,8 +94,7 @@ function normalizeName(s: string): string {
   return s.toLowerCase().replace(/_/g, "");
 }
 
-export function findCharacters(gamestate: Buffer, name: string): CharacterMatch[] {
-  const text = gamestate.toString("utf8");
+export function findCharacters(text: string, name: string): CharacterMatch[] {
   const start = text.indexOf("\nliving={");
   if (start === -1) return [];
   // end = next top-level key after living's opening
