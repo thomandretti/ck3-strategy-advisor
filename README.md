@@ -116,6 +116,7 @@ These reflect what is and isn't stored in the save:
 ```bash
 npm test        # run the vitest suite
 npm run test:watch
+npm run lint    # eslint (typescript-eslint, flat config)
 npm run dev     # run the server from source via tsx
 ```
 
