@@ -4,12 +4,13 @@ import { formatCk3Date } from "./format.js";
 import { extractMilitary, type MilitaryInfo } from "./extract/military.js";
 import { extractSuccession, type SuccessionInfo } from "./extract/succession.js";
 import { extractDiplomacy, type DiplomacyInfo } from "./extract/diplomacy.js";
+import { extractFactions, extractVassals, type FactionInfo, type VassalInfo } from "./extract/vassals.js";
 
 export interface RealmOverview {
   rulerName: string; date: string; primaryTitle: string; tier: number;
   house: string; gold: number | null; prestige: number | null; piety: number | null;
 }
-export interface Snapshot { date: string; parsedAt: number; overview: RealmOverview; military: MilitaryInfo; succession: SuccessionInfo; diplomacy: DiplomacyInfo; }
+export interface Snapshot { date: string; parsedAt: number; overview: RealmOverview; military: MilitaryInfo; succession: SuccessionInfo; diplomacy: DiplomacyInfo; factions: FactionInfo[]; vassals: VassalInfo[]; }
 
 function num(v: unknown): number | null { return typeof v === "number" ? v : null; }
 function str(v: unknown): string { return typeof v === "string" ? v : String(v ?? ""); }
@@ -33,6 +34,8 @@ export async function buildSnapshot(gamestate: Buffer, loc: Localizer): Promise<
     const military = extractMilitary(q, loc);
     const succession = extractSuccession(q, loc);
     const diplomacy = extractDiplomacy(q, loc);
-    return { date, parsedAt: Date.now(), overview, military, succession, diplomacy };
+    const { factions, memberIds } = extractFactions(q, loc);
+    const vassals = extractVassals(q, loc, memberIds);
+    return { date, parsedAt: Date.now(), overview, military, succession, diplomacy, factions, vassals };
   });
 }

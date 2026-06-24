@@ -42,6 +42,7 @@ living={
 		strength=8098.7
 		current_strength=8000.0
 		strength_without_hires=8098.7
+		vassal_contracts={ 5001 }
 	}
 }
 22222={
@@ -50,7 +51,7 @@ living={
 	traits={ 1 }
 	skill={ 3 3 3 3 3 3 }
 	alive_data={ gold=5.0 }
-	landed_data={ domain={ 2 } }
+	landed_data={ domain={ 2 } strength_for_liege=500 }
 }
 }
 wars={
@@ -72,5 +73,15 @@ active_relations={
 opinions={
 active_opinions={
 { owner=22222 target=33564206 temporary_opinion={ value=-30 } }
+}
+}
+vassal_contracts={
+active={
+5001={ vassal=22222 liege=33564206 levels={ 11 0 } }
+}
+}
+faction_manager={
+factions={
+8001={ type="independence_faction" target=33564206 power=30 power_threshold=70 leader=22222 members={ { character=22222 faction=8001 } } }
 }
 }
