@@ -21,7 +21,7 @@
     "claude",
     "paradox"
   ],
-  "engines": { "node": ">=20" },
+  "engines": { "node": ">=22" },
   "bin": { "ck3-advisor": "dist/index.js" },
   "files": ["dist"],
   "scripts": {

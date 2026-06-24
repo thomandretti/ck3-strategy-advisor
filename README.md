@@ -12,7 +12,7 @@ It is read-only: it never modifies your save or your game.
 
 ## Requirements
 
-- **Node.js ≥ 20**
+- **Node.js ≥ 22**
 - **Non-Ironman saves only.** Ironman saves are stored in a binary format; the
   advisor detects them and returns a friendly message instead of mis-parsing.
   Play (or re-save) without Ironman to use the advisor.
