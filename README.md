@@ -82,6 +82,7 @@ Or in **Claude Desktop**, add to `claude_desktop_config.json`:
 | `succession` | Heirs in order, succession & gender laws, rival claimants. |
 | `diplomacy` | Alliances, truces, independence, and who most dislikes you. |
 | `vassals` | Your most powerful vassals: power owed, opinion, council seat, faction danger flag. |
+| `titles` | Titles you personally hold, grouped by tier, each with its de jure liege. |
 | `factions` | Factions targeting you: type, strength vs. their threshold, members, leader. |
 | `expansion` | Stored claims (pressed/unpressed), unheld de jure titles, ongoing-war targets. |
 | `find_character` | Search living characters by (partial) name → ids. |

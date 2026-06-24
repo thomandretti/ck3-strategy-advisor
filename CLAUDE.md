@@ -7,7 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 A local stdio **Model Context Protocol** server that reads the player's latest
 **Crusader Kings III** save and exposes their strategic situation to Claude as
 curated, read-only tools (`realm_overview`, `military`, `succession`,
-`diplomacy`, `vassals`, `factions`, `expansion`, `find_character`, `character`).
+`diplomacy`, `vassals`, `titles`, `factions`, `expansion`, `find_character`,
+`character`).
 It never modifies the save or the game. See `README.md` for install/config/usage.
 
 ## Commands
