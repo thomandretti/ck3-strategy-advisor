@@ -8,6 +8,7 @@ import { registerDiplomacyTool } from "./diplomacy.js";
 import { registerVassalsTool } from "./vassals.js";
 import { registerFactionsTool } from "./factions.js";
 import { registerExpansionTool } from "./expansion.js";
+import { registerTitlesTool } from "./titles.js";
 
 export function registerAllTools(server: McpServer, cache: SnapshotCache) {
   registerOverview(server, cache);
@@ -18,4 +19,5 @@ export function registerAllTools(server: McpServer, cache: SnapshotCache) {
   registerVassalsTool(server, cache);
   registerFactionsTool(server, cache);
   registerExpansionTool(server, cache);
+  registerTitlesTool(server, cache);
 }
