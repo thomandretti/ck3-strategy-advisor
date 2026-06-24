@@ -1,9 +1,29 @@
 {
   "name": "ck3-strategy-advisor",
   "version": "0.1.0",
+  "description": "A local, read-only Model Context Protocol server that reads your latest Crusader Kings III save and exposes your strategic situation to Claude as curated tools.",
   "type": "module",
+  "license": "MIT",
+  "author": "Thom Andretti",
+  "homepage": "https://github.com/thomandretti/ck3-strategy-advisor#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomandretti/ck3-strategy-advisor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thomandretti/ck3-strategy-advisor/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "crusader-kings-iii",
+    "ck3",
+    "claude",
+    "paradox"
+  ],
   "engines": { "node": ">=20" },
   "bin": { "ck3-advisor": "dist/index.js" },
+  "files": ["dist"],
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",

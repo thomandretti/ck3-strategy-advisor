@@ -126,3 +126,11 @@ The verified gamestate field paths the extractors rely on are documented in
 The documented path for shipping this to non-developers is [MCPB](https://github.com/anthropics/mcpb)
 (a self-contained bundle with the Node runtime), so it can be installed without a
 local Node/npm setup. The current release targets the local stdio prototype above.
+
+## License
+
+[MIT](LICENSE) © Thom Andretti
+
+This is an unofficial, fan-made tool. *Crusader Kings III* is a trademark of
+Paradox Interactive AB. This project is not affiliated with or endorsed by
+Paradox Interactive.
