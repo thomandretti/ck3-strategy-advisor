@@ -4,10 +4,12 @@ import { registerOverview } from "./overview.js";
 import { registerCharacterTools } from "./character.js";
 import { registerMilitaryTool } from "./military.js";
 import { registerSuccessionTool } from "./succession.js";
+import { registerDiplomacyTool } from "./diplomacy.js";
 
 export function registerAllTools(server: McpServer, cache: SnapshotCache) {
   registerOverview(server, cache);
   registerCharacterTools(server, cache);
   registerMilitaryTool(server, cache);
   registerSuccessionTool(server, cache);
+  registerDiplomacyTool(server, cache);
 }

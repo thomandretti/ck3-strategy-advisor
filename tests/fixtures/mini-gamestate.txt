@@ -64,3 +64,13 @@ active_wars={
 }
 }
 }
+relations={
+active_relations={
+{ first=33564206 second=22222 alliances={ { allied_through_0=33564206 allied_through_1=22222 } } truce_0={ date=1135.6.1 result="victory" } }
+}
+}
+opinions={
+active_opinions={
+{ owner=22222 target=33564206 temporary_opinion={ value=-30 } }
+}
+}
