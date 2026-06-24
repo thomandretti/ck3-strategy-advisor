@@ -62,3 +62,25 @@ describe("extractForeignRealm — matching & core", () => {
     expect(await run("")).toBeNull();
   });
 });
+
+describe("extractForeignRealm — allies & wars", () => {
+  it("lists allies by their primary title where resolvable", async () => {
+    const r = await run("Alba"); // 40000 allied to 40001 (holds k_france)
+    expect(r!.allies).toEqual([{ id: 40001, name: "Philippe", realm: "France" }]);
+  });
+
+  it("lists the ruler's active wars with side and target title", async () => {
+    const r = await run("Alba"); // war 9002: 40000 attacker, targets title 6 (Lothian)
+    expect(r!.wars).toEqual([
+      { side: "attacker", cbType: "conquest_cb", targetTitle: "Lothian" },
+    ]);
+  });
+
+  it("returns empty allies/wars for a ruler with neither", async () => {
+    const r = await run("k_france"); // 40001: allied (covered above) but check Lothian's duke
+    const duke = await run("d_scotland"); // 40002: no alliance, no war
+    expect(duke!.allies).toEqual([]);
+    expect(duke!.wars).toEqual([]);
+    expect(r).not.toBeNull();
+  });
+});

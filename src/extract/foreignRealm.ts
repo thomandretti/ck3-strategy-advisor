@@ -68,6 +68,48 @@ export function findBestTitle(q: Query, loc: Localizer, name: string): number | 
   return best ? best.id : null;
 }
 
+// Alliances for a ruler — mirrors the diplomacy extractor, keyed by holder id.
+function collectAllies(q: Query, loc: Localizer, holderId: number): AllyRef[] {
+  const rels = (q.at("/relations/active_relations") as Record<string, unknown>[] | undefined) ?? [];
+  const out: AllyRef[] = [];
+  for (const entry of rels) {
+    if (!entry || typeof entry !== "object") continue;
+    const first = entry["first"] as number | undefined;
+    const second = entry["second"] as number | undefined;
+    if (first !== holderId && second !== holderId) continue;
+    if (entry["alliances"] == null) continue;
+    const otherId = (first === holderId ? second : first) as number;
+    const domain = (q.at(`/living/${otherId}/landed_data/domain`) as number[] | undefined) ?? [];
+    const realm = domain[0] !== undefined ? resolveTitleName(q, loc, domain[0]) : null;
+    out.push({ id: otherId, name: charName(q, otherId), realm });
+  }
+  return out;
+}
+
+// Active wars a ruler participates in — mirrors the military extractor.
+function collectWars(q: Query, loc: Localizer, holderId: number): ForeignWar[] {
+  const activeWars = q.at("/wars/active_wars") as Record<string, unknown> | undefined;
+  const out: ForeignWar[] = [];
+  if (!activeWars || typeof activeWars !== "object") return out;
+  for (const warValue of Object.values(activeWars)) {
+    if (!warValue || typeof warValue !== "object") continue;
+    const war = warValue as Record<string, unknown>;
+    const att = war["attacker"] as Record<string, unknown> | undefined;
+    const def = war["defender"] as Record<string, unknown> | undefined;
+    const attP = (att?.["participants"] as Array<{ character: number }> | undefined) ?? [];
+    const defP = (def?.["participants"] as Array<{ character: number }> | undefined) ?? [];
+    const isAtt = attP.some((p) => p.character === holderId);
+    const isDef = !isAtt && defP.some((p) => p.character === holderId);
+    if (!isAtt && !isDef) continue;
+    const cb = war["casus_belli"] as Record<string, unknown> | undefined;
+    const cbType = typeof cb?.["type"] === "string" ? (cb["type"] as string) : "";
+    const targeted = (cb?.["targeted_titles"] as number[] | undefined) ?? [];
+    const targetTitle = targeted[0] !== undefined ? resolveTitleName(q, loc, targeted[0]) : null;
+    out.push({ side: isAtt ? "attacker" : "defender", cbType, targetTitle });
+  }
+  return out;
+}
+
 export function extractForeignRealm(q: Query, loc: Localizer, name: string): ForeignRealmInfo | null {
   const titleId = findBestTitle(q, loc, name);
   if (titleId === null) return null;
@@ -104,9 +146,8 @@ export function extractForeignRealm(q: Query, loc: Localizer, name: string): For
     if (typeof liegeHolder === "number") liege = { id: liegeHolder, name: charName(q, liegeHolder) };
   }
 
-  // allies/wars filled in Task 2
-  const allies: AllyRef[] = [];
-  const wars: ForeignWar[] = [];
+  const allies = typeof holderId === "number" ? collectAllies(q, loc, holderId) : [];
+  const wars = typeof holderId === "number" ? collectWars(q, loc, holderId) : [];
 
   return { titleId, realmName, tier, ruler, strength, currentStrength, liege, allies, wars };
 }
