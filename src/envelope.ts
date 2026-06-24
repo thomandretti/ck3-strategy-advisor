@@ -20,7 +20,9 @@ export function extractGamestate(buf: Buffer): Buffer {
   const format = detectFormat(buf);
   if (format === "ironman") {
     throw new IronmanError(
-      "Ironman/binary saves are not supported. Save without Ironman to use the advisor.",
+      "This save is in CK3's binary token format (Ironman saves and autosaves " +
+        "use it) which the advisor can't decode. Make a normal (non-autosave) " +
+        "save and it will be picked up automatically.",
     );
   }
   if (format === "unknown") throw new Error("Not a CK3 save file (missing SAV header).");

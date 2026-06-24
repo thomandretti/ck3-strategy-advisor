@@ -1,10 +1,24 @@
-import { readdir, readFile, stat } from "node:fs/promises";
+import { open, readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
+import { detectFormat } from "./envelope.js";
 
 export interface SaveRef { path: string; mtimeMs: number; }
 export interface Source {
   latest(): Promise<SaveRef | null>;
   read(ref: SaveRef): Promise<Buffer>;
+}
+
+// detectFormat only needs the "SAV" header + plaintext meta region; the first
+// 256 bytes are enough, so we avoid reading whole multi-MB saves just to pick.
+async function readHeader(path: string, bytes = 256): Promise<Buffer> {
+  const fh = await open(path, "r");
+  try {
+    const buf = Buffer.alloc(bytes);
+    const { bytesRead } = await fh.read(buf, 0, bytes, 0);
+    return buf.subarray(0, bytesRead);
+  } finally {
+    await fh.close();
+  }
 }
 
 export class SaveFileSource implements Source {
@@ -17,14 +31,29 @@ export class SaveFileSource implements Source {
     } catch {
       return null;
     }
-    const candidates = names.filter((n) => n.endsWith(".ck3") && n !== "last_save.ck3");
-    let best: SaveRef | null = null;
-    for (const name of candidates) {
+    const candidates: SaveRef[] = [];
+    for (const name of names) {
+      if (!name.endsWith(".ck3") || name === "last_save.ck3") continue;
       const path = join(this.opts.saveDir, name);
       const s = await stat(path);
-      if (!best || s.mtimeMs > best.mtimeMs) best = { path, mtimeMs: s.mtimeMs };
+      candidates.push({ path, mtimeMs: s.mtimeMs });
     }
-    return best;
+    if (candidates.length === 0) return null;
+    candidates.sort((a, b) => b.mtimeMs - a.mtimeMs); // newest first
+
+    // Prefer the newest *parseable* save. CK3 autosaves use the binary token
+    // format regardless of Ironman, and are usually the newest file — picking
+    // by mtime alone lets a binary autosave shadow a readable manual save.
+    for (const ref of candidates) {
+      try {
+        if (detectFormat(await readHeader(ref.path)) === "text") return ref;
+      } catch {
+        // unreadable (e.g. mid-write) — try the next candidate
+      }
+    }
+    // No text save found — fall back to the newest so the caller still surfaces
+    // the friendly binary/Ironman message rather than "no save found".
+    return candidates[0];
   }
 
   read(ref: SaveRef): Promise<Buffer> {

@@ -37,11 +37,12 @@ WSL/`/mnt/c` discovery as a fallback:
 `CK3_GAME_DIR` is optional. Without it, titles/traits are shown as their raw game
 keys instead of localized names — everything else still works.
 
-The server always reads the **newest** `.ck3` in the save directory. Note that
-CK3 autosaves are frequently Ironman — if your newest save is an Ironman
-autosave, every tool returns the "save without Ironman" message even when you
-have non-Ironman saves present. Make a manual non-Ironman save so it is the
-newest file.
+The server reads the **newest readable** `.ck3` in the save directory. CK3
+autosaves are written in a binary token format (the same one Ironman uses)
+regardless of whether you play Ironman, and the advisor can't decode it — so it
+automatically **skips binary autosaves/Ironman saves and uses your newest normal
+save** instead. You don't need to delete or rename autosaves; just keep making
+ordinary saves and the freshest one is picked up.
 
 ## Register with Claude
 
