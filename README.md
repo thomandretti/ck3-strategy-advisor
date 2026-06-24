@@ -87,6 +87,7 @@ Or in **Claude Desktop**, add to `claude_desktop_config.json`:
 | `expansion` | Stored claims (pressed/unpressed), unheld de jure titles, ongoing-war targets. |
 | `find_character` | Search living characters by (partial) name → ids. |
 | `character` | Full dossier for one character id: traits, skills, wealth, claims. |
+| `foreign_realm` | Look up any realm by name/key — ruler, army, allies, liege, active wars. |
 
 ## Known limitations (v1)
 

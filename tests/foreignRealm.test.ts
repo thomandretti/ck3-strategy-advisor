@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url";
 import { queryGamestate } from "../src/parser.js";
 import { extractForeignRealm } from "../src/extract/foreignRealm.js";
 import { Localizer } from "../src/localization.js";
+import { formatForeignRealm, registerForeignRealmTool } from "../src/tools/foreignRealm.js";
+import type { ForeignRealmInfo } from "../src/extract/foreignRealm.js";
 
 const GS = readFileSync(
   fileURLToPath(new URL("./fixtures/mini-gamestate.txt", import.meta.url)),
@@ -82,5 +84,57 @@ describe("extractForeignRealm — allies & wars", () => {
     expect(duke!.allies).toEqual([]);
     expect(duke!.wars).toEqual([]);
     expect(r).not.toBeNull();
+  });
+});
+
+describe("foreign_realm tool", () => {
+  const info: ForeignRealmInfo = {
+    titleId: 4, realmName: "Alba", tier: "kingdom",
+    ruler: { id: 40000, name: "Causantin", martial: 7, gold: 88, prestige: 500 },
+    strength: 6000, currentStrength: 5500, liege: null,
+    allies: [{ id: 40001, name: "Philippe", realm: "France" }],
+    wars: [{ side: "attacker", cbType: "conquest_cb", targetTitle: "Lothian" }],
+  };
+
+  it("formats a realm dossier", () => {
+    const text = formatForeignRealm(info);
+    expect(text).toContain("# Alba (Kingdom)");
+    expect(text).toContain("Ruler: Causantin (id 40000) — Mar 7 | Gold 88 | Prestige 500");
+    expect(text).toContain("Army: 6000 (current 5500)");
+    expect(text).toContain("Liege: independent");
+    expect(text).toContain("Allies: France (Philippe)");
+    expect(text).toContain("Wars: attacker vs Lothian");
+  });
+
+  it("renders missing data honestly", () => {
+    const bare = formatForeignRealm({
+      ...info, strength: null, currentStrength: null,
+      liege: { id: 1, name: "Otto" }, allies: [], wars: [],
+    });
+    expect(bare).toContain("Army: not recorded");
+    expect(bare).toContain("Liege: vassal of Otto");
+    expect(bare).toContain("Allies: none");
+    expect(bare).toContain("Wars: none");
+  });
+
+  it("returns a stamped no-match line when nothing matches", async () => {
+    const snap = { date: "1130-07-24", parsedAt: Date.now() } as any;
+    const cache = { get: async () => snap, query: async () => null, loc: null } as any;
+    let handler: any;
+    const server = { registerTool: (_n: string, _c: any, h: any) => { handler = h; } } as any;
+    registerForeignRealmTool(server, cache);
+    const res = await handler({ name: "Atlantis" });
+    expect(res.isError).toBeUndefined();
+    expect(res.content[0].text).toContain("No realm matching 'Atlantis'.");
+  });
+
+  it("surfaces a cache error as isError", async () => {
+    const cache = { get: async () => ({ error: "no save" }) } as any;
+    let handler: any;
+    const server = { registerTool: (_n: string, _c: any, h: any) => { handler = h; } } as any;
+    registerForeignRealmTool(server, cache);
+    const res = await handler({ name: "Alba" });
+    expect(res.isError).toBe(true);
+    expect(res.content[0].text).toBe("no save");
   });
 });

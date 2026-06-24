@@ -9,6 +9,7 @@ import { registerVassalsTool } from "./vassals.js";
 import { registerFactionsTool } from "./factions.js";
 import { registerExpansionTool } from "./expansion.js";
 import { registerTitlesTool } from "./titles.js";
+import { registerForeignRealmTool } from "./foreignRealm.js";
 
 export function registerAllTools(server: McpServer, cache: SnapshotCache) {
   registerOverview(server, cache);
@@ -20,4 +21,5 @@ export function registerAllTools(server: McpServer, cache: SnapshotCache) {
   registerFactionsTool(server, cache);
   registerExpansionTool(server, cache);
   registerTitlesTool(server, cache);
+  registerForeignRealmTool(server, cache);
 }
