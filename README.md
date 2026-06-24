@@ -37,7 +37,11 @@ WSL/`/mnt/c` discovery as a fallback:
 `CK3_GAME_DIR` is optional. Without it, titles/traits are shown as their raw game
 keys instead of localized names — everything else still works.
 
-The server always reads the **newest** `.ck3` in the save directory.
+The server always reads the **newest** `.ck3` in the save directory. Note that
+CK3 autosaves are frequently Ironman — if your newest save is an Ironman
+autosave, every tool returns the "save without Ironman" message even when you
+have non-Ironman saves present. Make a manual non-Ironman save so it is the
+newest file.
 
 ## Register with Claude
 
@@ -94,7 +98,11 @@ These reflect what is and isn't stored in the save:
   realm's mobilisation totals.
 - **Opinion** values (e.g. in `diplomacy`/`vassals`) are approximate, summed from
   stored opinion modifiers rather than the game's computed total.
-- **Localization** is English-only and ignores `$KEY$` interpolation.
+- **Localization** is English-only, ignores `$KEY$` interpolation, and is
+  currently **unverified against a real CK3 install** (developed against a test
+  fixture). Real `.yml` quirks — a leading BOM, `§` colour codes and `#`
+  comments inside values, deeply nested subfolders — may not all be handled.
+  Without `CK3_GAME_DIR`, titles and traits appear as their raw game keys.
 - `expansion` lists **stored** levers (claims, unheld de jure titles, active-war
   CBs), not a full computed enumeration of every possible casus belli.
 
