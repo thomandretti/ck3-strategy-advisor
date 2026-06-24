@@ -1,4 +1,5 @@
 date=1130.7.24
+traits_lookup={ "just" "temperate" "chaste" }
 meta_data={
 	version="1.8.1"
 	meta_date=1130.7.24
@@ -11,11 +12,18 @@ played_character={
 	character=33564206
 	player=1
 }
+landed_titles={
+landed_titles={
+1={ key="e_hre" name="The Holy Roman Empire" holder=33564206 }
+2={ key="k_bohemia" name="Bohemia" holder=33564206 }
+}
+}
 living={
 33564206={
 	first_name="Jenec"
 	dynasty_house=4872
-	traits={ 75 55 53 }
+	traits={ 0 1 2 }
+	skill={ 8 6 7 5 9 4 }
 	alive_data={
 		gold=124.5
 		income=12.3
@@ -23,6 +31,19 @@ living={
 		piety={ currency=100.0 accumulated=310.0 }
 		health=4.2
 		stress=15
+		claim={ { title=2 pressed=yes } }
 	}
+	landed_data={
+		domain={ 1 2 }
+		council={ 22222 }
+	}
+}
+22222={
+	first_name="Adela"
+	dynasty_house=4872
+	traits={ 1 }
+	skill={ 3 3 3 3 3 3 }
+	alive_data={ gold=5.0 }
+	landed_data={ domain={ 2 } }
 }
 }
