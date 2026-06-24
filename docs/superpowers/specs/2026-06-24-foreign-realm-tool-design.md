@@ -44,9 +44,14 @@ query against three strings:
 
 Rank candidates and return the top one:
 
-1. **Held over unheld** — titles with a numeric `holder` rank above those without.
-2. **Tier** — empire > kingdom > duchy > county > barony (`titleTierFromKey`).
-3. **Match quality** — exact/whole-word match above substring match.
+1. **Match quality** — an exact match (query equals the `key`, display `name`,
+   or localized key) ranks above a substring match. This is first so an exactly
+   named realm is never shadowed by a higher-tier realm that merely contains the
+   query as a substring.
+2. **Held over unheld** — at equal match quality, titles with a numeric `holder`
+   rank above those without.
+3. **Tier** — at equal quality and held status, empire > kingdom > duchy >
+   county > barony (`titleTierFromKey`).
 
 Degrades gracefully without `CK3_GAME_DIR`: the `key` substring still catches
 "scotland" even when localization is unavailable.

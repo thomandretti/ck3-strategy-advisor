@@ -138,3 +138,33 @@ describe("foreign_realm tool", () => {
     expect(res.content[0].text).toBe("no save");
   });
 });
+
+describe("extractForeignRealm — ranking precedence & unheld", () => {
+  it("ranks an exact match above a higher-priority substring match", async () => {
+    // "Mercia" exactly matches k_mercia's display name (unheld KINGDOM, id 7);
+    // d_mercia (HELD duchy, id 8) matches only as a substring. Quality wins,
+    // so the exact-but-unheld kingdom is chosen over the held duchy.
+    const r = await run("Mercia");
+    expect(r!.titleId).toBe(7);
+  });
+
+  it("at equal match quality, ranks a held title above an unheld higher tier", async () => {
+    // "merc" is a substring of both k_mercia (unheld kingdom, id 7) and
+    // d_mercia (held duchy, id 8); neither is an exact match. held > unheld
+    // outranks the kingdom's higher tier, so the held duchy is chosen.
+    const r = await run("merc");
+    expect(r!.titleId).toBe(8);
+    expect(r!.tier).toBe("duchy");
+  });
+
+  it("returns an unheld realm with a sentinel ruler and no army", async () => {
+    // k_lotharingia (id 3) has no holder.
+    const r = await run("Lotharingia");
+    expect(r!.titleId).toBe(3);
+    expect(r!.ruler.id).toBe(-1);
+    expect(r!.ruler.name).toBe("unheld");
+    expect(r!.strength).toBeNull();
+    expect(r!.allies).toEqual([]);
+    expect(r!.wars).toEqual([]);
+  });
+});

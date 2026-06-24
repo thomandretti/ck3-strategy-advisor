@@ -20,6 +20,8 @@ landed_titles={
 4={ key="k_scotland" name="Alba" holder=40000 }
 5={ key="k_france" name="France" holder=40001 }
 6={ key="d_scotland" name="Lothian" holder=40002 de_facto_liege=4 }
+7={ key="k_mercia" name="Mercia" }
+8={ key="d_mercia" name="Mercia Duchy" holder=40002 }
 }
 }
 living={

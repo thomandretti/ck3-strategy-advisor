@@ -692,7 +692,7 @@ git commit -m "feat: add foreign_realm MCP tool"
 
 **Spec coverage:**
 - Interface `foreign_realm(name)` → Task 3 tool. ✓
-- Best-single-match (key/name/localized, held>unheld, tier, exact>substring) → Task 1 `findBestTitle`. ✓
+- Best-single-match (key/name/localized, exact>substring, held>unheld, tier) → Task 1 `findBestTitle`. ✓
 - Output: realm+tier, ruler+id, army (with "not recorded"), allies by primary title, liege status, active wars, ruler key stats → Tasks 1–3. ✓
 - Architecture: pure extractor + thin `cache.query` tool, reuse `resolveTitleName`/`titleTierFromKey`/`extractCharacter`, generalised relation/war scans → Tasks 1–2. ✓
 - Error handling: no throw, honest missing data → Task 3 tool + formatter. ✓
