@@ -93,34 +93,22 @@ export function extractCharacter(q: Query, loc: Localizer, id: number): Characte
   };
 }
 
-export function findCharacters(q: Query, loc: Localizer, name: string): CharacterMatch[] {
-  const living = q.at("/living") as Record<string, unknown> | undefined;
-  if (!living) return [];
-
-  const lower = name.toLowerCase();
-  const matches: CharacterMatch[] = [];
-
-  for (const [key, char] of Object.entries(living)) {
-    if (!char || typeof char !== "object") continue;
-    const firstName = (char as Record<string, unknown>).first_name;
-    if (firstName === undefined) continue;
-
-    const firstNameStr = String(firstName);
-    if (!firstNameStr.toLowerCase().includes(lower)) continue;
-
-    const id = Number(key);
-
-    // Set trait lookup for title resolution (may have already been set, but be safe)
-    const traitsLookup = q.at("/traits_lookup") as string[] | null | undefined;
-    loc.setTraitLookup(traitsLookup ?? null);
-
-    // Resolve primary title
-    const domain = (q.at(`/living/${id}/landed_data/domain`) as number[] | undefined) ?? [];
-    const primaryTitleId = domain[0];
-    const primaryTitle = primaryTitleId !== undefined ? titleName(q, loc, primaryTitleId) : null;
-
-    matches.push({ id, name: firstNameStr, primaryTitle });
+export function findCharacters(gamestate: Buffer, name: string): CharacterMatch[] {
+  const text = gamestate.toString("utf8");
+  const start = text.indexOf("\nliving={");
+  if (start === -1) return [];
+  // end = next top-level key after living's opening
+  const endRe = /\n[a-z_][a-z0-9_]*=\{/g;
+  endRe.lastIndex = start + "\nliving={".length;
+  const endM = endRe.exec(text);
+  const end = endM ? endM.index : text.length;
+  const needle = name.toLowerCase();
+  const re = /(?:^|\n)(\d+)=\{\s*first_name="([^"]*)"/g;
+  re.lastIndex = start;
+  const out: CharacterMatch[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null && m.index < end) {
+    if (m[2].toLowerCase().includes(needle)) out.push({ id: Number(m[1]), name: m[2], primaryTitle: null });
   }
-
-  return matches;
+  return out;
 }

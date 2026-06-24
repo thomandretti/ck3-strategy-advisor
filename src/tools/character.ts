@@ -16,16 +16,32 @@ export function registerCharacterTools(server: McpServer, cache: SnapshotCache) 
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async ({ name }: { name: string }) => {
-      const result = await cache.query((q) => findCharacters(q, cache.loc, name));
-      if ("error" in result) return { isError: true, content: [{ type: "text", text: result.error }] };
+      const gs = await cache.rawGamestate();
+      if ("error" in gs) return { isError: true, content: [{ type: "text", text: gs.error }] };
 
-      if (result.length === 0) {
+      const all = findCharacters(gs, name);
+      if (all.length === 0) {
         return { content: [{ type: "text", text: `No living character matching '${name}'.` }] };
       }
 
-      const { shown, note } = truncate(result, 10);
+      const { shown, note } = truncate(all, 10);
+
+      // Enrich primaryTitle for shown matches only (surgical per-id query)
+      const snap = await cache.get();
+      if ("error" in snap) return { isError: true, content: [{ type: "text", text: snap.error }] };
+      await cache.query((q) => {
+        for (const m of shown) {
+          const domain = (q.at(`/living/${m.id}/landed_data/domain`) as number[] | undefined) ?? [];
+          const titleId = domain[0];
+          if (titleId !== undefined) {
+            const titleName = q.at(`/landed_titles/landed_titles/${titleId}/name`) as string | undefined;
+            m.primaryTitle = titleName ?? null;
+          }
+        }
+      });
+
       const lines = shown.map((m) => `- ${m.name} (id ${m.id}) — ${m.primaryTitle ?? "no title"}`).join("\n");
-      return { content: [{ type: "text", text: lines + note }] };
+      return { content: [{ type: "text", text: stamp(snap, lines + note) }] };
     },
   );
 

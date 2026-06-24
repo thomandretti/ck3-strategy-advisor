@@ -34,4 +34,11 @@ export class SnapshotCache {
     if (!this.gamestate) return { error: "No gamestate available." };
     return queryGamestate(this.gamestate, fn);
   }
+
+  async rawGamestate(): Promise<Buffer | { error: string }> {
+    const snap = await this.get(); // refreshes this.gamestate
+    if ("error" in snap) return { error: snap.error };
+    if (!this.gamestate) return { error: "No gamestate available." };
+    return this.gamestate;
+  }
 }

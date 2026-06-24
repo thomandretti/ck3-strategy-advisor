@@ -25,8 +25,7 @@ test("extractCharacter returns null for an unknown id", async () => {
   expect(c).toBeNull();
 });
 
-test("findCharacters matches by partial first name", async () => {
-  const loc = new Localizer(null);
-  const matches = await queryGamestate(GS, (q) => findCharacters(q, loc, "del")); // 'Adela'
+test("findCharacters matches by partial first name", () => {
+  const matches = findCharacters(GS, "del"); // 'Adela'
   expect(matches.map((m) => m.id)).toContain(22222);
 });
