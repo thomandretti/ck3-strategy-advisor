@@ -27,7 +27,8 @@ export function extractSuccession(q: Query, loc: Localizer): SuccessionInfo {
 
   // Primary title: domain[0]
   const domain = (q.at(`${landedData}/domain`) as number[] | undefined) ?? [];
-  const primaryTitleId: number | null = domain.length > 0 ? domain[0] : null;
+  // domain[0] is guaranteed present by the length>0 guard; assert to satisfy noUncheckedIndexedAccess
+  const primaryTitleId: number | null = domain.length > 0 ? domain[0]! : null;
 
   const primaryTitle: string =
     primaryTitleId !== null

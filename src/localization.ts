@@ -27,7 +27,8 @@ export class Localizer {
     const text = readFileSync(path, "utf8");
     for (const line of text.split("\n")) {
       const m = /^\s+([\w.-]+):\d*\s+"(.*)"/.exec(line);
-      if (m) this.map.set(m[1], m[2]);
+      // m matched -> both non-optional capture groups are present
+      if (m) this.map.set(m[1]!, m[2]!);
     }
   }
 

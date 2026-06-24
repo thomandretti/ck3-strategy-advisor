@@ -53,7 +53,9 @@ export class SaveFileSource implements Source {
     }
     // No text save found — fall back to the newest so the caller still surfaces
     // the friendly binary/Ironman message rather than "no save found".
-    return candidates[0];
+    // candidates is non-empty here (guarded by the length check above), so
+    // [0] is always present; the newest save after sorting.
+    return candidates[0]!;
   }
 
   read(ref: SaveRef): Promise<Buffer> {

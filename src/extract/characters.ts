@@ -108,7 +108,9 @@ export function findCharacters(text: string, name: string): CharacterMatch[] {
   const out: CharacterMatch[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null && m.index < end) {
-    if (normalizeName(m[2]).includes(needle)) out.push({ id: Number(m[1]), name: m[2], primaryTitle: null });
+    // Both capture groups are non-optional in the regex, so a successful
+    // exec guarantees m[1] and m[2] are defined.
+    if (normalizeName(m[2]!).includes(needle)) out.push({ id: Number(m[1]!), name: m[2]!, primaryTitle: null });
   }
   return out;
 }
