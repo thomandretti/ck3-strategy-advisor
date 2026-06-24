@@ -15,7 +15,7 @@ played_character={
 landed_titles={
 landed_titles={
 1={ key="e_hre" name="The Holy Roman Empire" holder=33564206 claim={ 22222 } de_jure_vassals={ 3 } }
-2={ key="k_bohemia" name="Bohemia" holder=33564206 }
+2={ key="k_bohemia" name="Bohemia" holder=33564206 de_jure_liege=1 }
 3={ key="k_lotharingia" name="Lotharingia" }
 }
 }

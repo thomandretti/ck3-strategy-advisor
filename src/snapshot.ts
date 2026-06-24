@@ -6,12 +6,13 @@ import { extractSuccession, type SuccessionInfo } from "./extract/succession.js"
 import { extractDiplomacy, type DiplomacyInfo } from "./extract/diplomacy.js";
 import { extractFactions, extractVassals, type FactionInfo, type VassalInfo } from "./extract/vassals.js";
 import { extractExpansion, type ExpansionInfo } from "./extract/expansion.js";
+import { extractTitles, type TitlesInfo } from "./extract/titles.js";
 
 export interface RealmOverview {
   rulerName: string; date: string; primaryTitle: string; tier: number;
   house: string; gold: number | null; prestige: number | null; piety: number | null;
 }
-export interface Snapshot { date: string; parsedAt: number; overview: RealmOverview; military: MilitaryInfo; succession: SuccessionInfo; diplomacy: DiplomacyInfo; factions: FactionInfo[]; vassals: VassalInfo[]; vassalCount: number; expansion: ExpansionInfo; }
+export interface Snapshot { date: string; parsedAt: number; overview: RealmOverview; military: MilitaryInfo; succession: SuccessionInfo; diplomacy: DiplomacyInfo; factions: FactionInfo[]; vassals: VassalInfo[]; vassalCount: number; expansion: ExpansionInfo; titles: TitlesInfo; }
 
 function num(v: unknown): number | null { return typeof v === "number" ? v : null; }
 function str(v: unknown): string { return typeof v === "string" ? v : String(v ?? ""); }
@@ -38,6 +39,7 @@ export async function buildSnapshot(gamestate: Buffer, loc: Localizer): Promise<
     const diplomacy = extractDiplomacy(q, loc);
     const { factions, memberIds } = extractFactions(q, loc);
     const { vassals, total: vassalCount } = extractVassals(q, loc, memberIds);
-    return { date, parsedAt: Date.now(), overview, military, expansion, succession, diplomacy, factions, vassals, vassalCount };
+    const titles = extractTitles(q, loc);
+    return { date, parsedAt: Date.now(), overview, military, expansion, succession, diplomacy, factions, vassals, vassalCount, titles };
   });
 }
