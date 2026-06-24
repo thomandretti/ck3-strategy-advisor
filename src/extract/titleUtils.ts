@@ -15,11 +15,17 @@ export type TitleTier = "empire" | "kingdom" | "duchy" | "county" | "barony" | "
 // Tier is encoded in the title key's prefix (e_/k_/d_/c_/b_).
 export function titleTierFromKey(key: string): TitleTier {
   switch (key[0]) {
-    case "e": return "empire";
-    case "k": return "kingdom";
-    case "d": return "duchy";
-    case "c": return "county";
-    case "b": return "barony";
-    default: return "other";
+    case "e":
+      return "empire";
+    case "k":
+      return "kingdom";
+    case "d":
+      return "duchy";
+    case "c":
+      return "county";
+    case "b":
+      return "barony";
+    default:
+      return "other";
   }
 }

@@ -5,8 +5,12 @@ import { extractForeignRealm, type ForeignRealmInfo } from "../extract/foreignRe
 import { stamp } from "../format.js";
 
 const TIER_LABEL: Record<string, string> = {
-  empire: "Empire", kingdom: "Kingdom", duchy: "Duchy",
-  county: "County", barony: "Barony", other: "Title",
+  empire: "Empire",
+  kingdom: "Kingdom",
+  duchy: "Duchy",
+  county: "County",
+  barony: "Barony",
+  other: "Title",
 };
 
 export function formatForeignRealm(info: ForeignRealmInfo): string {
@@ -52,7 +56,10 @@ export function registerForeignRealmTool(server: McpServer, cache: SnapshotCache
 
       const result = await cache.query((q) => extractForeignRealm(q, cache.loc, name));
       if (result !== null && typeof result === "object" && "error" in result) {
-        return { isError: true, content: [{ type: "text", text: (result as { error: string }).error }] };
+        return {
+          isError: true,
+          content: [{ type: "text", text: (result as { error: string }).error }],
+        };
       }
       const info = result as ForeignRealmInfo | null;
       if (!info) {

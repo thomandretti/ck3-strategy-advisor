@@ -12,6 +12,6 @@ test("queries a value by json pointer", async () => {
 });
 
 test("exposes root for whole-object access", async () => {
-  const root = await queryGamestate(GS, (q) => q.root()) as Record<string, unknown>;
+  const root = (await queryGamestate(GS, (q) => q.root())) as Record<string, unknown>;
   expect(root).toHaveProperty("played_character");
 });

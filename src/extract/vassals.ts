@@ -2,18 +2,31 @@ import type { Query } from "../parser.js";
 import type { Localizer } from "../localization.js";
 
 export interface FactionInfo {
-  type: string; power: number | null; threshold: number | null;
-  discontent: number | null; members: number; leaderName: string | null;
+  type: string;
+  power: number | null;
+  threshold: number | null;
+  discontent: number | null;
+  members: number;
+  leaderName: string | null;
 }
 export interface VassalInfo {
-  id: number; name: string; strengthForLiege: number;
-  opinion: number | null; councilSeat: boolean; inFaction: boolean;
+  id: number;
+  name: string;
+  strengthForLiege: number;
+  opinion: number | null;
+  councilSeat: boolean;
+  inFaction: boolean;
 }
 
-function num(v: unknown): number | null { return typeof v === "number" ? v : null; }
+function num(v: unknown): number | null {
+  return typeof v === "number" ? v : null;
+}
 
 /** Returns factions targeting the player + the set of their member char ids */
-export function extractFactions(q: Query, loc: Localizer): { factions: FactionInfo[]; memberIds: Set<number> } {
+export function extractFactions(
+  q: Query,
+  loc: Localizer,
+): { factions: FactionInfo[]; memberIds: Set<number> } {
   void loc;
   const playerId = q.at("/played_character/character") as number;
   const factionsObj = q.at("/faction_manager/factions") as Record<string, unknown> | undefined;
@@ -68,12 +81,18 @@ export function extractFactions(q: Query, loc: Localizer): { factions: FactionIn
 }
 
 /** topN vassals by strengthForLiege; uses faction memberIds + single opinion pass */
-export function extractVassals(q: Query, loc: Localizer, factionMemberIds: Set<number>, topN = 8): { vassals: VassalInfo[]; total: number } {
+export function extractVassals(
+  q: Query,
+  loc: Localizer,
+  factionMemberIds: Set<number>,
+  topN = 8,
+): { vassals: VassalInfo[]; total: number } {
   void loc;
   const playerId = q.at("/played_character/character") as number;
 
   // 1. Resolve vassal contract ids from player's landed_data
-  const contractIds = (q.at(`/living/${playerId}/landed_data/vassal_contracts`) as number[] | undefined) ?? [];
+  const contractIds =
+    (q.at(`/living/${playerId}/landed_data/vassal_contracts`) as number[] | undefined) ?? [];
 
   // 2. For each contract, resolve the vassal character id and their strength_for_liege
   type VassalEntry = { id: number; strength: number };
@@ -88,9 +107,9 @@ export function extractVassals(q: Query, loc: Localizer, factionMemberIds: Set<n
     const strength =
       typeof sfl === "number"
         ? sfl
-        : (typeof q.at(`/living/${vassalId}/landed_data/strength`) === "number"
-            ? (q.at(`/living/${vassalId}/landed_data/strength`) as number)
-            : 0);
+        : typeof q.at(`/living/${vassalId}/landed_data/strength`) === "number"
+          ? (q.at(`/living/${vassalId}/landed_data/strength`) as number)
+          : 0;
 
     entries.push({ id: vassalId, strength });
   }

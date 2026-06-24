@@ -21,7 +21,12 @@ export function extractTitles(q: Query, loc: Localizer): TitlesInfo {
   const domain = (q.at(`/living/${playerId}/landed_data/domain`) as number[] | undefined) ?? [];
 
   const info: TitlesInfo = {
-    empires: [], kingdoms: [], duchies: [], counties: [], baronies: [], total: 0,
+    empires: [],
+    kingdoms: [],
+    duchies: [],
+    counties: [],
+    baronies: [],
+    total: 0,
   };
 
   for (const id of domain) {
@@ -34,12 +39,23 @@ export function extractTitles(q: Query, loc: Localizer): TitlesInfo {
     const held: HeldTitle = { id, name: resolveTitleName(q, loc, id), deJureLiege };
 
     switch (tier) {
-      case "empire": info.empires.push(held); break;
-      case "kingdom": info.kingdoms.push(held); break;
-      case "duchy": info.duchies.push(held); break;
-      case "county": info.counties.push(held); break;
-      case "barony": info.baronies.push(held); break;
-      default: continue; // 'other' — not expected in a player domain; skip
+      case "empire":
+        info.empires.push(held);
+        break;
+      case "kingdom":
+        info.kingdoms.push(held);
+        break;
+      case "duchy":
+        info.duchies.push(held);
+        break;
+      case "county":
+        info.counties.push(held);
+        break;
+      case "barony":
+        info.baronies.push(held);
+        break;
+      default:
+        continue; // 'other' — not expected in a player domain; skip
     }
     info.total++;
   }

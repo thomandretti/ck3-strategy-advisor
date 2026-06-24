@@ -8,7 +8,10 @@ import { SnapshotCache } from "../src/cache.js";
 import { Localizer } from "../src/localization.js";
 import { makeTextEnvelope } from "./fixtures/make-envelope.js";
 
-const GS = readFileSync(fileURLToPath(new URL("./fixtures/mini-gamestate.txt", import.meta.url)), "utf8");
+const GS = readFileSync(
+  fileURLToPath(new URL("./fixtures/mini-gamestate.txt", import.meta.url)),
+  "utf8",
+);
 
 test("cache builds once, then serves until mtime changes", async () => {
   const dir = mkdtempSync(join(tmpdir(), "ck3-"));

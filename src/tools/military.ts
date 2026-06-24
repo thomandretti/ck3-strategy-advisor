@@ -19,7 +19,8 @@ export function registerMilitaryTool(server: McpServer, cache: SnapshotCache) {
 
       const levyStr = m.levy !== null ? Math.round(m.levy).toString() : "?";
       const strengthStr = m.strength !== null ? Math.round(m.strength).toString() : "?";
-      const currentStr = m.currentStrength !== null ? Math.round(m.currentStrength).toString() : "?";
+      const currentStr =
+        m.currentStrength !== null ? Math.round(m.currentStrength).toString() : "?";
 
       let body = `# Military\n- Levy: ${levyStr} | Total strength: ${strengthStr} (current ${currentStr})\n`;
 

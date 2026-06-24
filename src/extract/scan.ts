@@ -10,8 +10,7 @@ export function forEachRelation(
   subjectId: number,
   fn: (otherId: number, entry: Record<string, unknown>) => void,
 ): void {
-  const rels =
-    (q.at("/relations/active_relations") as Record<string, unknown>[] | undefined) ?? [];
+  const rels = (q.at("/relations/active_relations") as Record<string, unknown>[] | undefined) ?? [];
   for (const entry of rels) {
     if (!entry || typeof entry !== "object") continue;
     const first = entry["first"] as number | undefined;

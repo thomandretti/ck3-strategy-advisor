@@ -4,9 +4,23 @@ import { resolveTitleName, titleTierFromKey, type TitleTier } from "./titleUtils
 import { extractCharacter } from "./characters.js";
 import { forEachRelation, forEachWar } from "./scan.js";
 
-export interface AllyRef { id: number; name: string; realm: string | null }
-export interface ForeignWar { side: "attacker" | "defender"; cbType: string; targetTitle: string | null }
-export interface RulerRef { id: number; name: string; martial: number; gold: number | null; prestige: number | null }
+export interface AllyRef {
+  id: number;
+  name: string;
+  realm: string | null;
+}
+export interface ForeignWar {
+  side: "attacker" | "defender";
+  cbType: string;
+  targetTitle: string | null;
+}
+export interface RulerRef {
+  id: number;
+  name: string;
+  martial: number;
+  gold: number | null;
+  prestige: number | null;
+}
 export interface ForeignRealmInfo {
   titleId: number;
   realmName: string;
@@ -21,12 +35,18 @@ export interface ForeignRealmInfo {
 
 function tierRank(t: TitleTier): number {
   switch (t) {
-    case "empire": return 5;
-    case "kingdom": return 4;
-    case "duchy": return 3;
-    case "county": return 2;
-    case "barony": return 1;
-    default: return 0;
+    case "empire":
+      return 5;
+    case "kingdom":
+      return 4;
+    case "duchy":
+      return 3;
+    case "county":
+      return 2;
+    case "barony":
+      return 1;
+    default:
+      return 0;
   }
 }
 
@@ -94,7 +114,11 @@ function collectWars(q: Query, loc: Localizer, holderId: number): ForeignWar[] {
   return out;
 }
 
-export function extractForeignRealm(q: Query, loc: Localizer, name: string): ForeignRealmInfo | null {
+export function extractForeignRealm(
+  q: Query,
+  loc: Localizer,
+  name: string,
+): ForeignRealmInfo | null {
   const titleId = findBestTitle(q, loc, name);
   if (titleId === null) return null;
 
@@ -110,15 +134,25 @@ export function extractForeignRealm(q: Query, loc: Localizer, name: string): For
   if (typeof holderId === "number") {
     const c = extractCharacter(q, loc, holderId);
     ruler = c
-      ? { id: holderId, name: c.name, martial: c.skills.martial, gold: c.gold, prestige: c.prestige }
+      ? {
+          id: holderId,
+          name: c.name,
+          martial: c.skills.martial,
+          gold: c.gold,
+          prestige: c.prestige,
+        }
       : { id: holderId, name: "unknown", martial: 0, gold: null, prestige: null };
   } else {
     ruler = { id: -1, name: "unheld", martial: 0, gold: null, prestige: null };
   }
 
   // Army — same fields as the military extractor, read off the holder.
-  const sRaw = typeof holderId === "number" ? q.at(`/living/${holderId}/landed_data/strength`) : undefined;
-  const csRaw = typeof holderId === "number" ? q.at(`/living/${holderId}/landed_data/current_strength`) : undefined;
+  const sRaw =
+    typeof holderId === "number" ? q.at(`/living/${holderId}/landed_data/strength`) : undefined;
+  const csRaw =
+    typeof holderId === "number"
+      ? q.at(`/living/${holderId}/landed_data/current_strength`)
+      : undefined;
   const strength = typeof sRaw === "number" ? sRaw : null;
   const currentStrength = typeof csRaw === "number" ? csRaw : null;
 
@@ -126,8 +160,11 @@ export function extractForeignRealm(q: Query, loc: Localizer, name: string): For
   const liegeTitleId = q.at(`${tPath}/de_facto_liege`) as number | undefined;
   let liege: { id: number; name: string } | null = null;
   if (typeof liegeTitleId === "number") {
-    const liegeHolder = q.at(`/landed_titles/landed_titles/${liegeTitleId}/holder`) as number | undefined;
-    if (typeof liegeHolder === "number") liege = { id: liegeHolder, name: charName(q, liegeHolder) };
+    const liegeHolder = q.at(`/landed_titles/landed_titles/${liegeTitleId}/holder`) as
+      | number
+      | undefined;
+    if (typeof liegeHolder === "number")
+      liege = { id: liegeHolder, name: charName(q, liegeHolder) };
   }
 
   const allies = typeof holderId === "number" ? collectAllies(q, loc, holderId) : [];

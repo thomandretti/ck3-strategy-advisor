@@ -8,9 +8,7 @@ import { extractTitles } from "../src/extract/titles.js";
 import { Localizer } from "../src/localization.js";
 import { registerTitlesTool } from "../src/tools/titles.js";
 
-const GS = readFileSync(
-  fileURLToPath(new URL("./fixtures/mini-gamestate.txt", import.meta.url)),
-);
+const GS = readFileSync(fileURLToPath(new URL("./fixtures/mini-gamestate.txt", import.meta.url)));
 
 describe("titleTierFromKey", () => {
   it("maps tier prefixes", () => {
@@ -30,9 +28,7 @@ describe("extractTitles", () => {
   it("buckets the player's domain by tier with de jure lieges", async () => {
     const info = (await buildSnapshot(GS, new Localizer(null))).titles;
     expect(info.total).toBe(2);
-    expect(info.empires).toEqual([
-      { id: 1, name: "The Holy Roman Empire", deJureLiege: null },
-    ]);
+    expect(info.empires).toEqual([{ id: 1, name: "The Holy Roman Empire", deJureLiege: null }]);
     expect(info.kingdoms).toEqual([
       { id: 2, name: "Bohemia", deJureLiege: "The Holy Roman Empire" },
     ]);
@@ -75,14 +71,19 @@ describe("titles tool", () => {
       titles: {
         empires: [{ id: 1, name: "The Holy Roman Empire", deJureLiege: null }],
         kingdoms: [{ id: 2, name: "Bohemia", deJureLiege: "The Holy Roman Empire" }],
-        duchies: [], counties: [], baronies: [], total: 2,
+        duchies: [],
+        counties: [],
+        baronies: [],
+        total: 2,
       },
     } as any;
     const cache = { get: async () => snap } as any;
 
     let handler: any;
     const server = {
-      registerTool: (_name: string, _cfg: any, h: any) => { handler = h; },
+      registerTool: (_name: string, _cfg: any, h: any) => {
+        handler = h;
+      },
     } as any;
 
     registerTitlesTool(server, cache);
@@ -126,7 +127,9 @@ describe("titles tool", () => {
 
     let handler: any;
     const server = {
-      registerTool: (_name: string, _cfg: any, h: any) => { handler = h; },
+      registerTool: (_name: string, _cfg: any, h: any) => {
+        handler = h;
+      },
     } as any;
 
     registerTitlesTool(server, cache);

@@ -12,12 +12,23 @@ export class Localizer {
 
   private loadDir(dir: string): void {
     let entries: string[];
-    try { entries = readdirSync(dir); } catch { return; } // missing dir -> empty map
+    try {
+      entries = readdirSync(dir);
+    } catch {
+      return;
+    } // missing dir -> empty map
     for (const name of entries) {
       const path = join(dir, name);
       let st;
-      try { st = statSync(path); } catch { continue; }
-      if (st.isDirectory()) { this.loadDir(path); continue; } // CK3 nests subfolders
+      try {
+        st = statSync(path);
+      } catch {
+        continue;
+      }
+      if (st.isDirectory()) {
+        this.loadDir(path);
+        continue;
+      } // CK3 nests subfolders
       if (!name.endsWith(".yml")) continue;
       this.loadFile(path);
     }
@@ -33,14 +44,18 @@ export class Localizer {
   }
 
   /** Per-save trait index table (from the gamestate's traits_lookup). */
-  setTraitLookup(lookup: string[] | null): void { this.traitLookup = lookup; }
+  setTraitLookup(lookup: string[] | null): void {
+    this.traitLookup = lookup;
+  }
 
   resolve(key: string): string {
     const v = this.map.get(key);
     if (v !== undefined) return v;
     if (!this.warned && this.map.size === 0) {
       this.warned = true;
-      process.stderr.write("ck3-advisor: no localization loaded (game dir missing?); showing raw keys.\n");
+      process.stderr.write(
+        "ck3-advisor: no localization loaded (game dir missing?); showing raw keys.\n",
+      );
     }
     return key; // fallback
   }

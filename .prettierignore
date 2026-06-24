@@ -1,0 +1,13 @@
+dist/
+node_modules/
+package-lock.json
+
+# Local tooling artifacts (also git-ignored).
+.superpowers/
+.claude/
+
+# Test fixtures mimic real CK3 save/localization formats — keep verbatim.
+tests/fixtures/
+
+# Generated/long-form planning docs and verified schema reference.
+docs/

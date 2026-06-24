@@ -2,7 +2,10 @@ import type { Query } from "../parser.js";
 import type { Localizer } from "../localization.js";
 import { resolveTitleName } from "./titleUtils.js";
 
-export interface HeirRef { id: number; name: string }
+export interface HeirRef {
+  id: number;
+  name: string;
+}
 export interface SuccessionInfo {
   primaryTitle: string;
   primaryTitleId: number | null;
@@ -31,14 +34,11 @@ export function extractSuccession(q: Query, loc: Localizer): SuccessionInfo {
   const primaryTitleId: number | null = domain.length > 0 ? domain[0]! : null;
 
   const primaryTitle: string =
-    primaryTitleId !== null
-      ? resolveTitleName(q, loc, primaryTitleId)
-      : "unknown";
+    primaryTitleId !== null ? resolveTitleName(q, loc, primaryTitleId) : "unknown";
 
   // Laws
   const laws = (q.at(`${landedData}/laws`) as string[] | undefined) ?? [];
-  const successionLaw =
-    laws.find((l) => l.endsWith("_succession_law")) ?? "unknown";
+  const successionLaw = laws.find((l) => l.endsWith("_succession_law")) ?? "unknown";
   const genderLaw =
     laws.find((l) => /_(preference|only)_law$/.test(l) || l === "gender_equal_law") ?? "unknown";
 
@@ -57,7 +57,8 @@ export function extractSuccession(q: Query, loc: Localizer): SuccessionInfo {
   // Claimants from the primary title's claim array
   const claimantIds: number[] =
     primaryTitleId !== null
-      ? ((q.at(`/landed_titles/landed_titles/${primaryTitleId}/claim`) as number[] | undefined) ?? [])
+      ? ((q.at(`/landed_titles/landed_titles/${primaryTitleId}/claim`) as number[] | undefined) ??
+        [])
       : [];
   const totalClaimants = claimantIds.length;
   const claimants: HeirRef[] = claimantIds.slice(0, CLAIMANT_CAP).map((id) => ({

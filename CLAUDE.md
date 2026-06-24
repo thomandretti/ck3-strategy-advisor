@@ -87,7 +87,7 @@ documents:
   vs `landed_data/*` (domain, levy, council, laws, succession) — some fields
   visible in raw text (`alive_data/council`, `alive_data/domain`) do NOT resolve
   through jomini; the schema marks the working path.
-- Verify a new path resolves *through jomini*, not just in raw text, before
+- Verify a new path resolves _through jomini_, not just in raw text, before
   relying on it (see below).
 
 When mapping a new field against a real save:

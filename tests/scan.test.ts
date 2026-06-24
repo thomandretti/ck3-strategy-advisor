@@ -4,9 +4,7 @@ import { fileURLToPath } from "node:url";
 import { queryGamestate } from "../src/parser.js";
 import { forEachRelation, forEachWar } from "../src/extract/scan.js";
 
-const GS = readFileSync(
-  fileURLToPath(new URL("./fixtures/mini-gamestate.txt", import.meta.url)),
-);
+const GS = readFileSync(fileURLToPath(new URL("./fixtures/mini-gamestate.txt", import.meta.url)));
 
 describe("forEachRelation", () => {
   it("visits only relations involving the subject, with the other id", async () => {

@@ -2,7 +2,10 @@ import { open, readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { detectFormat } from "./envelope.js";
 
-export interface SaveRef { path: string; mtimeMs: number; }
+export interface SaveRef {
+  path: string;
+  mtimeMs: number;
+}
 export interface Source {
   latest(): Promise<SaveRef | null>;
   read(ref: SaveRef): Promise<Buffer>;

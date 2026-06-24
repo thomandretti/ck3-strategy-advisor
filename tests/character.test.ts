@@ -12,7 +12,7 @@ test("extractCharacter returns a full dossier", async () => {
   const c = await queryGamestate(GS, (q) => extractCharacter(q, loc, 33564206));
   expect(c).not.toBeNull();
   expect(c!.name).toBe("Jenec");
-  expect(c!.skills.learning).toBe(9);       // skill[4]
+  expect(c!.skills.learning).toBe(9); // skill[4]
   expect(c!.traits).toEqual(["just", "temperate", "chaste"]);
   expect(c!.gold).toBe(124.5);
   expect(c!.primaryTitle).toBe("The Holy Roman Empire"); // domain[0]=1 -> name

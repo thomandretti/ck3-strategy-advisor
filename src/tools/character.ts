@@ -23,13 +23,16 @@ export function registerCharacterTools(server: McpServer, cache: SnapshotCache) 
 
       // FIX D: use pre-converted text (once per save, not per call)
       const textResult = await cache.rawGamestateText();
-      if (typeof textResult !== "string") return { isError: true, content: [{ type: "text", text: textResult.error }] };
+      if (typeof textResult !== "string")
+        return { isError: true, content: [{ type: "text", text: textResult.error }] };
       const text = textResult;
 
       const all = findCharacters(text, name);
       if (all.length === 0) {
         // FIX B: stamp the zero-match response
-        return { content: [{ type: "text", text: stamp(snap, `No living character matching '${name}'.`) }] };
+        return {
+          content: [{ type: "text", text: stamp(snap, `No living character matching '${name}'.`) }],
+        };
       }
 
       const { shown, note } = truncate(all, 10);
@@ -46,10 +49,15 @@ export function registerCharacterTools(server: McpServer, cache: SnapshotCache) 
         }
       });
       if (enr && typeof enr === "object" && "error" in enr) {
-        return { isError: true, content: [{ type: "text", text: (enr as { error: string }).error }] };
+        return {
+          isError: true,
+          content: [{ type: "text", text: (enr as { error: string }).error }],
+        };
       }
 
-      const lines = shown.map((m) => `- ${m.name} (id ${m.id}) — ${m.primaryTitle ?? "no title"}`).join("\n");
+      const lines = shown
+        .map((m) => `- ${m.name} (id ${m.id}) — ${m.primaryTitle ?? "no title"}`)
+        .join("\n");
       return { content: [{ type: "text", text: stamp(snap, lines + note) }] };
     },
   );
@@ -72,7 +80,10 @@ export function registerCharacterTools(server: McpServer, cache: SnapshotCache) 
 
       const result = await cache.query((q) => extractCharacter(q, cache.loc, id));
       if (result !== null && typeof result === "object" && "error" in result) {
-        return { isError: true, content: [{ type: "text", text: (result as { error: string }).error }] };
+        return {
+          isError: true,
+          content: [{ type: "text", text: (result as { error: string }).error }],
+        };
       }
 
       const c = result as import("../extract/characters.js").CharacterInfo | null;

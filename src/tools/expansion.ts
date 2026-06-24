@@ -17,7 +17,8 @@ export function registerExpansionTool(server: McpServer, cache: SnapshotCache) {
     async () => {
       try {
         const snap = await cache.get();
-        if ("error" in snap) return { isError: true, content: [{ type: "text", text: snap.error }] };
+        if ("error" in snap)
+          return { isError: true, content: [{ type: "text", text: snap.error }] };
         const e = snap.expansion;
 
         let body = "# Expansion\n";

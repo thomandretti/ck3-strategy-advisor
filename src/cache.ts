@@ -11,11 +11,15 @@ export class SnapshotCache {
   private gamestateText: string | null = null;
   private inFlight: Promise<Snapshot | { error: string }> | null = null;
   private inFlightKey = "";
-  constructor(private source: Source, readonly loc: Localizer) {}
+  constructor(
+    private source: Source,
+    readonly loc: Localizer,
+  ) {}
 
   async get(): Promise<Snapshot | { error: string }> {
     const ref = await this.source.latest();
-    if (!ref) return this.current ?? { error: "No CK3 save found. Save your game, then ask again." };
+    if (!ref)
+      return this.current ?? { error: "No CK3 save found. Save your game, then ask again." };
     const k = `${ref.path}:${ref.mtimeMs}`;
     if (k === this.key && this.current) return this.current;
     // Coalesce concurrent builds for the same save into one parse.

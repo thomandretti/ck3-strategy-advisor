@@ -3,14 +3,26 @@ import type { Localizer } from "../localization.js";
 import { formatCk3Date } from "../format.js";
 import { forEachRelation } from "./scan.js";
 
-export interface DipRef { id: number; name: string }
-export interface TruceRef { id: number; name: string; until: string; result: string }
-export interface ThreatRef { id: number; name: string; opinion: number }
+export interface DipRef {
+  id: number;
+  name: string;
+}
+export interface TruceRef {
+  id: number;
+  name: string;
+  until: string;
+  result: string;
+}
+export interface ThreatRef {
+  id: number;
+  name: string;
+  opinion: number;
+}
 export interface DiplomacyInfo {
   independent: boolean;
   alliances: DipRef[];
   truces: TruceRef[];
-  hostile: ThreatRef[];  // top-N lowest summed opinion of the player
+  hostile: ThreatRef[]; // top-N lowest summed opinion of the player
 }
 
 const HOSTILE_CAP = 5;

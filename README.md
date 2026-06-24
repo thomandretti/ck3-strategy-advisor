@@ -31,10 +31,10 @@ npm run build
 The server finds your save and game directories from environment variables, with
 WSL/`/mnt/c` discovery as a fallback:
 
-| Variable | Purpose | Default |
-|----------|---------|---------|
+| Variable       | Purpose                             | Default                                                                                         |
+| -------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------- |
 | `CK3_SAVE_DIR` | Folder containing your `.ck3` saves | auto-discovered at `/mnt/c/Users/*/Documents/Paradox Interactive/Crusader Kings III/save games` |
-| `CK3_GAME_DIR` | CK3 game install (for localization) | `/mnt/c/Program Files (x86)/Steam/steamapps/common/Crusader Kings III/game` |
+| `CK3_GAME_DIR` | CK3 game install (for localization) | `/mnt/c/Program Files (x86)/Steam/steamapps/common/Crusader Kings III/game`                     |
 
 `CK3_GAME_DIR` is optional. Without it, titles/traits are shown as their raw game
 keys instead of localized names — everything else still works.
@@ -62,7 +62,9 @@ Or in **Claude Desktop**, add to `claude_desktop_config.json`:
     "ck3-advisor": {
       "command": "node",
       "args": ["/absolute/path/to/ck3mod/dist/index.js"],
-      "env": { "CK3_SAVE_DIR": "/mnt/c/Users/you/Documents/Paradox Interactive/Crusader Kings III/save games" }
+      "env": {
+        "CK3_SAVE_DIR": "/mnt/c/Users/you/Documents/Paradox Interactive/Crusader Kings III/save games"
+      }
     }
   }
 }
@@ -77,19 +79,19 @@ Or in **Claude Desktop**, add to `claude_desktop_config.json`:
 
 ## Tools
 
-| Tool | What it returns |
-|------|-----------------|
-| `realm_overview` | Ruler, primary title & tier, house, gold/prestige/piety, date. Start here. |
-| `military` | Levy + total mobilised strength, and ongoing wars (side, casus belli, target, score). |
-| `succession` | Heirs in order, succession & gender laws, rival claimants. |
-| `diplomacy` | Alliances, truces, independence, and who most dislikes you. |
-| `vassals` | Your most powerful vassals: power owed, opinion, council seat, faction danger flag. |
-| `titles` | Titles you personally hold, grouped by tier, each with its de jure liege. |
-| `factions` | Factions targeting you: type, strength vs. their threshold, members, leader. |
-| `expansion` | Stored claims (pressed/unpressed), unheld de jure titles, ongoing-war targets. |
-| `find_character` | Search living characters by (partial) name → ids. |
-| `character` | Full dossier for one character id: traits, skills, wealth, claims. |
-| `foreign_realm` | Look up any realm by name/key — ruler, army, allies, liege, active wars. |
+| Tool             | What it returns                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| `realm_overview` | Ruler, primary title & tier, house, gold/prestige/piety, date. Start here.            |
+| `military`       | Levy + total mobilised strength, and ongoing wars (side, casus belli, target, score). |
+| `succession`     | Heirs in order, succession & gender laws, rival claimants.                            |
+| `diplomacy`      | Alliances, truces, independence, and who most dislikes you.                           |
+| `vassals`        | Your most powerful vassals: power owed, opinion, council seat, faction danger flag.   |
+| `titles`         | Titles you personally hold, grouped by tier, each with its de jure liege.             |
+| `factions`       | Factions targeting you: type, strength vs. their threshold, members, leader.          |
+| `expansion`      | Stored claims (pressed/unpressed), unheld de jure titles, ongoing-war targets.        |
+| `find_character` | Search living characters by (partial) name → ids.                                     |
+| `character`      | Full dossier for one character id: traits, skills, wealth, claims.                    |
+| `foreign_realm`  | Look up any realm by name/key — ruler, army, allies, liege, active wars.              |
 
 ## Known limitations (v1)
 
@@ -117,6 +119,7 @@ These reflect what is and isn't stored in the save:
 npm test        # run the vitest suite
 npm run test:watch
 npm run lint    # eslint (typescript-eslint, flat config)
+npm run format  # prettier --write (check-only: npm run format:check)
 npm run dev     # run the server from source via tsx
 ```
 
@@ -134,6 +137,6 @@ local Node/npm setup. The current release targets the local stdio prototype abov
 
 [MIT](LICENSE) © Thom Andretti
 
-This is an unofficial, fan-made tool. *Crusader Kings III* is a trademark of
+This is an unofficial, fan-made tool. _Crusader Kings III_ is a trademark of
 Paradox Interactive AB. This project is not affiliated with or endorsed by
 Paradox Interactive.

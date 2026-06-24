@@ -54,7 +54,8 @@ export function extractCharacter(q: Query, loc: Localizer, id: number): Characte
 
   // Financial/status data
   const gold = (q.at(`/living/${id}/alive_data/gold/value`) as number | undefined) ?? null;
-  const prestige = (q.at(`/living/${id}/alive_data/prestige/accumulated`) as number | undefined) ?? null;
+  const prestige =
+    (q.at(`/living/${id}/alive_data/prestige/accumulated`) as number | undefined) ?? null;
   const piety = (q.at(`/living/${id}/alive_data/piety/accumulated`) as number | undefined) ?? null;
   const health = (q.at(`/living/${id}/alive_data/health`) as number | undefined) ?? null;
   const stress = (q.at(`/living/${id}/alive_data/stress`) as number | undefined) ?? null;
@@ -62,10 +63,14 @@ export function extractCharacter(q: Query, loc: Localizer, id: number): Characte
   // Primary title from domain[0]
   const domain = (q.at(`/living/${id}/landed_data/domain`) as number[] | undefined) ?? [];
   const primaryTitleId = domain[0];
-  const primaryTitle = primaryTitleId !== undefined ? resolveTitleName(q, loc, primaryTitleId) : null;
+  const primaryTitle =
+    primaryTitleId !== undefined ? resolveTitleName(q, loc, primaryTitleId) : null;
 
   // Claims
-  const rawClaims = (q.at(`/living/${id}/alive_data/claim`) as Array<{ title: number; pressed?: boolean }> | undefined) ?? [];
+  const rawClaims =
+    (q.at(`/living/${id}/alive_data/claim`) as
+      | Array<{ title: number; pressed?: boolean }>
+      | undefined) ?? [];
   const claims = rawClaims.map((c) => ({
     title: resolveTitleName(q, loc, c.title),
     pressed: c.pressed === true,
@@ -110,7 +115,8 @@ export function findCharacters(text: string, name: string): CharacterMatch[] {
   while ((m = re.exec(text)) !== null && m.index < end) {
     // Both capture groups are non-optional in the regex, so a successful
     // exec guarantees m[1] and m[2] are defined.
-    if (normalizeName(m[2]!).includes(needle)) out.push({ id: Number(m[1]!), name: m[2]!, primaryTitle: null });
+    if (normalizeName(m[2]!).includes(needle))
+      out.push({ id: Number(m[1]!), name: m[2]!, primaryTitle: null });
   }
   return out;
 }

@@ -7,9 +7,7 @@ import { Localizer } from "../src/localization.js";
 import { formatForeignRealm, registerForeignRealmTool } from "../src/tools/foreignRealm.js";
 import type { ForeignRealmInfo } from "../src/extract/foreignRealm.js";
 
-const GS = readFileSync(
-  fileURLToPath(new URL("./fixtures/mini-gamestate.txt", import.meta.url)),
-);
+const GS = readFileSync(fileURLToPath(new URL("./fixtures/mini-gamestate.txt", import.meta.url)));
 const run = (name: string) =>
   queryGamestate(GS, (q) => extractForeignRealm(q, new Localizer(null), name));
 
@@ -21,7 +19,11 @@ describe("extractForeignRealm — matching & core", () => {
     expect(r!.realmName).toBe("Alba");
     expect(r!.tier).toBe("kingdom");
     expect(r!.ruler).toEqual({
-      id: 40000, name: "Causantin", martial: 7, gold: 88, prestige: 500,
+      id: 40000,
+      name: "Causantin",
+      martial: 7,
+      gold: 88,
+      prestige: 500,
     });
     expect(r!.strength).toBe(6000);
     expect(r!.currentStrength).toBe(5500);
@@ -73,9 +75,7 @@ describe("extractForeignRealm — allies & wars", () => {
 
   it("lists the ruler's active wars with side and target title", async () => {
     const r = await run("Alba"); // war 9002: 40000 attacker, targets title 6 (Lothian)
-    expect(r!.wars).toEqual([
-      { side: "attacker", cbType: "conquest_cb", targetTitle: "Lothian" },
-    ]);
+    expect(r!.wars).toEqual([{ side: "attacker", cbType: "conquest_cb", targetTitle: "Lothian" }]);
   });
 
   it("returns empty allies/wars for a ruler with neither", async () => {
@@ -89,9 +89,13 @@ describe("extractForeignRealm — allies & wars", () => {
 
 describe("foreign_realm tool", () => {
   const info: ForeignRealmInfo = {
-    titleId: 4, realmName: "Alba", tier: "kingdom",
+    titleId: 4,
+    realmName: "Alba",
+    tier: "kingdom",
     ruler: { id: 40000, name: "Causantin", martial: 7, gold: 88, prestige: 500 },
-    strength: 6000, currentStrength: 5500, liege: null,
+    strength: 6000,
+    currentStrength: 5500,
+    liege: null,
     allies: [{ id: 40001, name: "Philippe", realm: "France" }],
     wars: [{ side: "attacker", cbType: "conquest_cb", targetTitle: "Lothian" }],
   };
@@ -108,8 +112,12 @@ describe("foreign_realm tool", () => {
 
   it("renders missing data honestly", () => {
     const bare = formatForeignRealm({
-      ...info, strength: null, currentStrength: null,
-      liege: { id: 1, name: "Otto" }, allies: [], wars: [],
+      ...info,
+      strength: null,
+      currentStrength: null,
+      liege: { id: 1, name: "Otto" },
+      allies: [],
+      wars: [],
     });
     expect(bare).toContain("Army: not recorded");
     expect(bare).toContain("Liege: vassal of Otto");
@@ -121,7 +129,11 @@ describe("foreign_realm tool", () => {
     const snap = { date: "1130-07-24", parsedAt: Date.now() } as any;
     const cache = { get: async () => snap, query: async () => null, loc: null } as any;
     let handler: any;
-    const server = { registerTool: (_n: string, _c: any, h: any) => { handler = h; } } as any;
+    const server = {
+      registerTool: (_n: string, _c: any, h: any) => {
+        handler = h;
+      },
+    } as any;
     registerForeignRealmTool(server, cache);
     const res = await handler({ name: "Atlantis" });
     expect(res.isError).toBeUndefined();
@@ -131,7 +143,11 @@ describe("foreign_realm tool", () => {
   it("surfaces a cache error as isError", async () => {
     const cache = { get: async () => ({ error: "no save" }) } as any;
     let handler: any;
-    const server = { registerTool: (_n: string, _c: any, h: any) => { handler = h; } } as any;
+    const server = {
+      registerTool: (_n: string, _c: any, h: any) => {
+        handler = h;
+      },
+    } as any;
     registerForeignRealmTool(server, cache);
     const res = await handler({ name: "Alba" });
     expect(res.isError).toBe(true);
