@@ -14,7 +14,7 @@ played_character={
 }
 landed_titles={
 landed_titles={
-1={ key="e_hre" name="The Holy Roman Empire" holder=33564206 }
+1={ key="e_hre" name="The Holy Roman Empire" holder=33564206 claim={ 22222 } }
 2={ key="k_bohemia" name="Bohemia" holder=33564206 }
 }
 }
@@ -36,6 +36,8 @@ living={
 	landed_data={
 		domain={ 1 2 }
 		council={ 22222 }
+		laws={ "crown_authority_3" "single_heir_succession_law" "male_preference_law" }
+		succession={ 22222 }
 		levy=4733.6
 		strength=8098.7
 		current_strength=8000.0

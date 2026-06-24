@@ -2,12 +2,13 @@ import { queryGamestate, type Query } from "./parser.js";
 import type { Localizer } from "./localization.js";
 import { formatCk3Date } from "./format.js";
 import { extractMilitary, type MilitaryInfo } from "./extract/military.js";
+import { extractSuccession, type SuccessionInfo } from "./extract/succession.js";
 
 export interface RealmOverview {
   rulerName: string; date: string; primaryTitle: string; tier: number;
   house: string; gold: number | null; prestige: number | null; piety: number | null;
 }
-export interface Snapshot { date: string; parsedAt: number; overview: RealmOverview; military: MilitaryInfo; }
+export interface Snapshot { date: string; parsedAt: number; overview: RealmOverview; military: MilitaryInfo; succession: SuccessionInfo; }
 
 function num(v: unknown): number | null { return typeof v === "number" ? v : null; }
 function str(v: unknown): string { return typeof v === "string" ? v : String(v ?? ""); }
@@ -29,6 +30,7 @@ export async function buildSnapshot(gamestate: Buffer, loc: Localizer): Promise<
       piety: num(q.at(`${alive}/piety/accumulated`)),
     };
     const military = extractMilitary(q, loc);
-    return { date, parsedAt: Date.now(), overview, military };
+    const succession = extractSuccession(q, loc);
+    return { date, parsedAt: Date.now(), overview, military, succession };
   });
 }
