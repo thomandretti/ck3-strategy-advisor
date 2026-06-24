@@ -1,6 +1,7 @@
 import type { Query } from "../parser.js";
 import type { Localizer } from "../localization.js";
 import { formatCk3Date } from "../format.js";
+import { forEachRelation } from "./scan.js";
 
 export interface DipRef { id: number; name: string }
 export interface TruceRef { id: number; name: string; until: string; result: string }
@@ -30,28 +31,14 @@ export function extractDiplomacy(q: Query, loc: Localizer): DiplomacyInfo {
       ? true
       : q.at(`/landed_titles/landed_titles/${primaryId}/de_facto_liege`) === undefined;
 
-  // Single pass over active_relations
-  const activeRelations =
-    (q.at("/relations/active_relations") as Record<string, unknown>[] | undefined) ?? [];
-
   const alliances: DipRef[] = [];
   const truces: TruceRef[] = [];
 
-  for (const entry of activeRelations) {
-    if (!entry || typeof entry !== "object") continue;
-    const first = entry["first"] as number | undefined;
-    const second = entry["second"] as number | undefined;
-
-    const isPlayer = first === playerId || second === playerId;
-    if (!isPlayer) continue;
-
-    const otherId = (first === playerId ? second : first) as number;
-
+  forEachRelation(q, playerId, (otherId, entry) => {
     // Alliance
     if (entry["alliances"] != null) {
       alliances.push({ id: otherId, name: resolveCharName(q, otherId) });
     }
-
     // Truces — emit at most ONE per relation entry (prefer truce_0, fall back to truce_1)
     const truceSlot =
       (entry["truce_0"] as Record<string, unknown> | undefined) ??
@@ -64,7 +51,7 @@ export function extractDiplomacy(q: Query, loc: Localizer): DiplomacyInfo {
         result: typeof truceSlot["result"] === "string" ? truceSlot["result"] : "?",
       });
     }
-  }
+  });
 
   // Single pass over active_opinions: sum temporary_opinion.value per owner (of the player)
   const activeOpinions =

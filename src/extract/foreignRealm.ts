@@ -2,6 +2,7 @@ import type { Query } from "../parser.js";
 import type { Localizer } from "../localization.js";
 import { resolveTitleName, titleTierFromKey, type TitleTier } from "./titleUtils.js";
 import { extractCharacter } from "./characters.js";
+import { forEachRelation, forEachWar } from "./scan.js";
 
 export interface AllyRef { id: number; name: string; realm: string | null }
 export interface ForeignWar { side: "attacker" | "defender"; cbType: string; targetTitle: string | null }
@@ -70,43 +71,26 @@ export function findBestTitle(q: Query, loc: Localizer, name: string): number | 
 
 // Alliances for a ruler — mirrors the diplomacy extractor, keyed by holder id.
 function collectAllies(q: Query, loc: Localizer, holderId: number): AllyRef[] {
-  const rels = (q.at("/relations/active_relations") as Record<string, unknown>[] | undefined) ?? [];
   const out: AllyRef[] = [];
-  for (const entry of rels) {
-    if (!entry || typeof entry !== "object") continue;
-    const first = entry["first"] as number | undefined;
-    const second = entry["second"] as number | undefined;
-    if (first !== holderId && second !== holderId) continue;
-    if (entry["alliances"] == null) continue;
-    const otherId = (first === holderId ? second : first) as number;
+  forEachRelation(q, holderId, (otherId, entry) => {
+    if (entry["alliances"] == null) return;
     const domain = (q.at(`/living/${otherId}/landed_data/domain`) as number[] | undefined) ?? [];
     const realm = domain[0] !== undefined ? resolveTitleName(q, loc, domain[0]) : null;
     out.push({ id: otherId, name: charName(q, otherId), realm });
-  }
+  });
   return out;
 }
 
 // Active wars a ruler participates in — mirrors the military extractor.
 function collectWars(q: Query, loc: Localizer, holderId: number): ForeignWar[] {
-  const activeWars = q.at("/wars/active_wars") as Record<string, unknown> | undefined;
   const out: ForeignWar[] = [];
-  if (!activeWars || typeof activeWars !== "object") return out;
-  for (const warValue of Object.values(activeWars)) {
-    if (!warValue || typeof warValue !== "object") continue;
-    const war = warValue as Record<string, unknown>;
-    const att = war["attacker"] as Record<string, unknown> | undefined;
-    const def = war["defender"] as Record<string, unknown> | undefined;
-    const attP = (att?.["participants"] as Array<{ character: number }> | undefined) ?? [];
-    const defP = (def?.["participants"] as Array<{ character: number }> | undefined) ?? [];
-    const isAtt = attP.some((p) => p.character === holderId);
-    const isDef = !isAtt && defP.some((p) => p.character === holderId);
-    if (!isAtt && !isDef) continue;
+  forEachWar(q, holderId, (side, war) => {
     const cb = war["casus_belli"] as Record<string, unknown> | undefined;
     const cbType = typeof cb?.["type"] === "string" ? (cb["type"] as string) : "";
     const targeted = (cb?.["targeted_titles"] as number[] | undefined) ?? [];
     const targetTitle = targeted[0] !== undefined ? resolveTitleName(q, loc, targeted[0]) : null;
-    out.push({ side: isAtt ? "attacker" : "defender", cbType, targetTitle });
-  }
+    out.push({ side, cbType, targetTitle });
+  });
   return out;
 }
 
