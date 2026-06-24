@@ -1,6 +1,6 @@
 {
   "name": "ck3-strategy-advisor",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "A local, read-only Model Context Protocol server that reads your latest Crusader Kings III save and exposes your strategic situation to Claude as curated tools.",
   "type": "module",
   "license": "MIT",
