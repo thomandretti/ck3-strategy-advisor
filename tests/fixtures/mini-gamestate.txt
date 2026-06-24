@@ -36,6 +36,10 @@ living={
 	landed_data={
 		domain={ 1 2 }
 		council={ 22222 }
+		levy=4733.6
+		strength=8098.7
+		current_strength=8000.0
+		strength_without_hires=8098.7
 	}
 }
 22222={
@@ -45,5 +49,16 @@ living={
 	skill={ 3 3 3 3 3 3 }
 	alive_data={ gold=5.0 }
 	landed_data={ domain={ 2 } }
+}
+}
+wars={
+active_wars={
+9001={
+	start_date=1131.2.1
+	name="garbage ONCLICK markup"
+	casus_belli={ type="claim_cb" attacker=33564206 defender=22222 targeted_titles={ 2 } }
+	attacker={ participants={ { character=33564206 } } ticking_war_score=12.5 }
+	defender={ participants={ { character=22222 } } ticking_war_score=3.0 }
+}
 }
 }
