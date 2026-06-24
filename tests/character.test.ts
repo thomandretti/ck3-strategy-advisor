@@ -29,3 +29,10 @@ test("findCharacters matches by partial first name", () => {
   const matches = findCharacters(GS, "del"); // 'Adela'
   expect(matches.map((m) => m.id)).toContain(22222);
 });
+
+test("findCharacters matches loc-encoded names after normalization", () => {
+  // CK3 stores "Críchán" as "CrI_chA_n"; a plain query should still match.
+  const buf = Buffer.from('\nliving={\n5={\n\tfirst_name="CrI_chA_n"\n}\n}\n');
+  const matches = findCharacters(buf, "crichan");
+  expect(matches).toEqual([{ id: 5, name: "CrI_chA_n", primaryTitle: null }]);
+});

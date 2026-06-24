@@ -93,6 +93,14 @@ export function extractCharacter(q: Query, loc: Localizer, id: number): Characte
   };
 }
 
+// CK3 stores custom names in an encoded form (e.g. "CrI_chA_n" for "Críchán"):
+// underscores separate combining segments and casing marks accents. Strip
+// underscores and lowercase so a plain query ("crichan") matches. This only
+// removes separators, so it never matches less than a bare lowercase compare.
+function normalizeName(s: string): string {
+  return s.toLowerCase().replace(/_/g, "");
+}
+
 export function findCharacters(gamestate: Buffer, name: string): CharacterMatch[] {
   const text = gamestate.toString("utf8");
   const start = text.indexOf("\nliving={");
@@ -102,13 +110,13 @@ export function findCharacters(gamestate: Buffer, name: string): CharacterMatch[
   endRe.lastIndex = start + "\nliving={".length;
   const endM = endRe.exec(text);
   const end = endM ? endM.index : text.length;
-  const needle = name.toLowerCase();
+  const needle = normalizeName(name);
   const re = /(?:^|\n)(\d+)=\{\s*first_name="([^"]*)"/g;
   re.lastIndex = start;
   const out: CharacterMatch[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null && m.index < end) {
-    if (m[2].toLowerCase().includes(needle)) out.push({ id: Number(m[1]), name: m[2], primaryTitle: null });
+    if (normalizeName(m[2]).includes(needle)) out.push({ id: Number(m[1]), name: m[2], primaryTitle: null });
   }
   return out;
 }
