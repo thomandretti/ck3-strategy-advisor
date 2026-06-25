@@ -44,7 +44,7 @@
     "@modelcontextprotocol/sdk": "^1.0.0",
     "adm-zip": "^0.5.16",
     "jomini": "^0.10.0",
-    "zod": "^3.23.0"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
