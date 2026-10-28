@@ -3,6 +3,8 @@ import { join } from "node:path";
 
 export class Localizer {
   private map = new Map<string, string>();
+  /** Keys from the localization "names" folders: character names the save stores escaped. */
+  private nameKeys = new Set<string>();
   private traitLookup: string[] | null = null;
   private warned = false;
 
@@ -36,11 +38,27 @@ export class Localizer {
 
   private loadFile(path: string): void {
     const text = readFileSync(path, "utf8");
+    const isNamesFile = path.split(/[\\/]/).includes("names");
     for (const line of text.split("\n")) {
       const m = /^\s+([\w.-]+):\d*\s+"(.*)"/.exec(line);
       // m matched -> both non-optional capture groups are present
-      if (m) this.map.set(m[1]!, m[2]!);
+      if (m) {
+        this.map.set(m[1]!, m[2]!);
+        if (isNamesFile) this.nameKeys.add(m[1]!);
+      }
     }
+  }
+
+  /**
+   * The save stores names with an accent as an escaped key ("BeorhtflE_d" for "Beorhtflæd",
+   * "RO_gnvaldr" for "Rögnvaldr", "PAAl" for "Pål"); the game's name localization maps them back. Replaces every
+   * such token in `text` and leaves everything else (including other loc keys) untouched.
+   */
+  decodeNames(text: string): string {
+    if (this.nameKeys.size === 0) return text;
+    return text.replace(/[A-Za-z0-9_-]+/g, (tok) =>
+      this.nameKeys.has(tok) ? this.map.get(tok)! : tok,
+    );
   }
 
   /** Per-save trait index table (from the gamestate's traits_lookup). */

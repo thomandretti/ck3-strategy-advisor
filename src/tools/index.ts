@@ -11,7 +11,39 @@ import { registerExpansionTool } from "./expansion.js";
 import { registerTitlesTool } from "./titles.js";
 import { registerForeignRealmTool } from "./foreignRealm.js";
 
+type ToolResult = { content: { type: string; text?: string }[] };
+
+// Tool output is built from the save's raw names; decode the escaped ones ("BeorhtflE_d" ->
+// "Beorhtflæd") in one place instead of in every extractor.
+function withDecodedNames(server: McpServer, cache: SnapshotCache, register: () => void) {
+  const target = server as unknown as { registerTool: (...args: unknown[]) => unknown };
+  const original = target.registerTool;
+  target.registerTool = (name, config, cb) =>
+    original.call(server, name, config, async (...args: unknown[]) => {
+      const result = (await (cb as (...a: unknown[]) => Promise<ToolResult>)(
+        ...args,
+      )) as ToolResult;
+      return {
+        ...result,
+        content: result.content.map((c) =>
+          c.type === "text" && typeof c.text === "string"
+            ? { ...c, text: cache.loc.decodeNames(c.text) }
+            : c,
+        ),
+      };
+    });
+  try {
+    register();
+  } finally {
+    target.registerTool = original;
+  }
+}
+
 export function registerAllTools(server: McpServer, cache: SnapshotCache) {
+  withDecodedNames(server, cache, () => registerEach(server, cache));
+}
+
+function registerEach(server: McpServer, cache: SnapshotCache) {
   registerOverview(server, cache);
   registerCharacterTools(server, cache);
   registerMilitaryTool(server, cache);
