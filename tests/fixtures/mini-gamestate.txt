@@ -103,11 +103,12 @@ active_relations={
 }
 opinions={
 active_opinions={
-{ owner=22222 target=33564206 temporary_opinion={ value=-30 } }
+{ owner=22222 target=33564206 temporary_opinion={ value=-40 } }
+{ owner=22222 target=33564206 temporary_opinion={ { value=-5 } { value=15 } } }
 }
 }
 vassal_contracts={
-active={
+database={
 5001={ vassal=22222 liege=33564206 levels={ 11 0 } }
 }
 }

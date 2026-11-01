@@ -248,8 +248,8 @@ states MAA is not broken out. Do not fabricate an MAA breakdown.**
 
 ### Vassal enumeration (Task 13)
 - Player's direct vassal contracts: `/living/{player}/landed_data/vassal_contracts` = array of contract IDs (e.g. 56 entries).
-- Resolve each: `/vassal_contracts/active/{contractId}` -> object `{ vassal: <charId>, liege: <charId>, date: Date, levels: int[] }`. `vassal` is the vassal character id; `liege` should equal the player.
-- `/vassal_contracts/active` is an object keyed by contract id (numeric-string keys).
+- Resolve each: `/vassal_contracts/database/{contractId}` -> object `{ vassal: <charId>, liege: <charId>, date: Date, levels: int[], contract_group: string }`. `vassal` is the vassal character id; `liege` should equal the player.
+- `/vassal_contracts/database` is an object keyed by contract id (numeric-string keys, ~10k entries, sparse: unused slots are the string `"none"`). **`/vassal_contracts/active` does NOT exist** (verified against a 1118 save; an earlier version of this doc was wrong).
 - Rank vassals by `/living/{vassalId}/landed_data/strength_for_liege` (number; troops the vassal owes the liege). Fallback `/living/{vassalId}/landed_data/strength`.
 - Vassal opinion OF player: single pass over `/opinions/active_opinions` (array ~85k–95k), keep entries where `owner === vassalId && target === {player}`, sum `temporary_opinion.value` (+ any base). Only scan once; keep only matches for the top-N vassals.
 - Council seat: vassalId present in `/living/{player}/landed_data/council`.
