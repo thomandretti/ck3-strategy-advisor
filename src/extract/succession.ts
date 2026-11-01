@@ -1,6 +1,7 @@
 import type { Query } from "../parser.js";
 import type { Localizer } from "../localization.js";
 import { resolveTitleName } from "./titleUtils.js";
+import { characterName } from "./names.js";
 
 export interface HeirRef {
   id: number;
@@ -19,10 +20,6 @@ export interface SuccessionInfo {
 
 const HEIR_CAP = 6;
 const CLAIMANT_CAP = 6;
-
-function resolveCharName(q: Query, id: number): string {
-  return String(q.at(`/living/${id}/first_name`) ?? "unknown");
-}
 
 export function extractSuccession(q: Query, loc: Localizer): SuccessionInfo {
   const playerId = q.at("/played_character/character") as number;
@@ -47,7 +44,7 @@ export function extractSuccession(q: Query, loc: Localizer): SuccessionInfo {
   const totalHeirs = successionIds.length;
   const heirs: HeirRef[] = successionIds.slice(0, HEIR_CAP).map((id) => ({
     id,
-    name: resolveCharName(q, id),
+    name: characterName(q, loc, id),
   }));
 
   // Resolve law strings through localizer (echoes raw key when no game dir)
@@ -63,7 +60,7 @@ export function extractSuccession(q: Query, loc: Localizer): SuccessionInfo {
   const totalClaimants = claimantIds.length;
   const claimants: HeirRef[] = claimantIds.slice(0, CLAIMANT_CAP).map((id) => ({
     id,
-    name: resolveCharName(q, id),
+    name: characterName(q, loc, id),
   }));
 
   return {

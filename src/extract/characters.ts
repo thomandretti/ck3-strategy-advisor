@@ -1,6 +1,7 @@
 import type { Query } from "../parser.js";
 import type { Localizer } from "../localization.js";
 import { resolveTitleName } from "./titleUtils.js";
+import { characterName } from "./names.js";
 
 export interface CharacterInfo {
   id: number;
@@ -78,7 +79,7 @@ export function extractCharacter(q: Query, loc: Localizer, id: number): Characte
 
   return {
     id,
-    name: String(firstName),
+    name: characterName(q, loc, id, String(firstName)),
     skills,
     traits,
     gold,
