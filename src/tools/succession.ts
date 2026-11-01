@@ -8,8 +8,8 @@ export function registerSuccessionTool(server: McpServer, cache: SnapshotCache) 
     {
       title: "Succession",
       description:
-        "Heirs for the player's primary title, in order, plus succession & gender laws and rival claimants. " +
-        "Note: CK3 does not store a partition preview, so which heir inherits which title is not simulated.",
+        "Designated heir (as the game shows it) and the ordered succession list for the player's primary title, plus succession & gender laws and rival claimants. " +
+        "Note: list order is not the designated heir under partition laws. CK3 does not store a partition preview, so which heir inherits which title is not simulated.",
       inputSchema: {},
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
@@ -26,9 +26,13 @@ export function registerSuccessionTool(server: McpServer, cache: SnapshotCache) 
         shownHeirs.length < s.totalHeirs
           ? `showing ${shownHeirs.length} of ${s.totalHeirs}`
           : String(s.totalHeirs);
-      body += `## Heirs (${heirLabel})\n`;
+      const dh = s.designatedHeir;
+      body += dh
+        ? `- Designated heir: ${dh.name} (${dh.id})\n`
+        : `- Designated heir: not stored in this save\n`;
+      body += `## Succession order (${heirLabel})\n`;
       shownHeirs.forEach((h, i) => {
-        const tag = i === 0 ? " <- primary heir" : "";
+        const tag = dh && h.id === dh.id ? " <- designated heir" : "";
         body += `${i + 1}. ${h.name} (${h.id})${tag}\n`;
       });
       body += heirNote;

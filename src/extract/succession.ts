@@ -11,6 +11,8 @@ export interface SuccessionInfo {
   primaryTitleId: number | null;
   successionLaw: string;
   genderLaw: string;
+  /** Game-designated heir (playable_data/diarchy_successor); null when absent. */
+  designatedHeir: HeirRef | null;
   heirs: HeirRef[];
   totalHeirs: number;
   claimants: HeirRef[];
@@ -50,6 +52,16 @@ export function extractSuccession(q: Query, loc: Localizer): SuccessionInfo {
     name: resolveCharName(q, id),
   }));
 
+  // Designated heir: the character the game shows as heir. Under partition laws
+  // the order of landed_data/succession is NOT this.
+  const designatedId = q.at(`/living/${playerId}/playable_data/diarchy_successor`) as
+    | number
+    | undefined;
+  const designatedHeir: HeirRef | null =
+    typeof designatedId === "number"
+      ? { id: designatedId, name: resolveCharName(q, designatedId) }
+      : null;
+
   // Resolve law strings through localizer (echoes raw key when no game dir)
   const resolvedSuccessionLaw = loc.resolve(successionLaw);
   const resolvedGenderLaw = loc.resolve(genderLaw);
@@ -71,6 +83,7 @@ export function extractSuccession(q: Query, loc: Localizer): SuccessionInfo {
     primaryTitleId,
     successionLaw: resolvedSuccessionLaw,
     genderLaw: resolvedGenderLaw,
+    designatedHeir,
     heirs,
     totalHeirs,
     claimants,

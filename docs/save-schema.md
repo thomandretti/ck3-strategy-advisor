@@ -52,7 +52,7 @@ These field mappings were verified through jomini against two real text saves: E
 | `/living/{player}/landed_data/domain_limit` | number | Maximum number of holdings the player can hold directly | `11` |
 | `/living/{player}/landed_data/vassal_limit` | number | Maximum number of direct vassals allowed | `92` |
 | `/living/{player}/landed_data/laws` | array | Array of active realm law string keys | `["crown_authority_3", "single_heir_succession_law", "male_preference_law"]` |
-| `/living/{player}/landed_data/succession` | array | Ordered succession list of character IDs; index 0 is primary heir | `[198957, 209183, 50523480, ...]` |
+| `/living/{player}/landed_data/succession` | array | Ordered succession list of character IDs; index 0 is the first heir only under single_heir_succession_law (NOT verified for partition laws; use `playable_data/diarchy_successor` for the designated heir) | `[198957, 209183, 50523480, ...]` |
 | `/living/{player}/landed_data/balance` | number | Net monthly income balance (income minus expenses) | `346.06462` |
 | `/living/{player}/landed_data/became_ruler_date` | Date | Date the player character became a ruler | `Date(1413-12-14)` |
 | `/living/{player}/landed_data/last_war_finish_date` | Date | Date of the most recently concluded war | `Date(1449-12-22)` |
@@ -210,12 +210,12 @@ These field mappings were verified through jomini against two real text saves: E
 
 ## succession-claims
 
-**Player-relative recipe:** (1) Succession laws: `/living/{player}/landed_data/laws` — string array; find element matching `*_succession_law` for law type, `*_law` for gender preference. (2) Heir order: `/living/{player}/landed_data/succession` — number array; index 0 is primary heir. (3) Player's own claims: `/living/{player}/alive_data/claim` — array of `{title, pressed?: true}`; check `.pressed`. (4) Active pretender titles: `/living/{player}/alive_data/pretender` — number array of title IDs (absent if none). (5) To find the player's primary title block: iterate `/landed_titles/landed_titles`, find entry where `.holder === {player}` and `.key` starts with `e_` (or highest tier held); then use that entry's `heir` (ordered heirs) and `claim` (claimant character IDs) arrays.
+**Player-relative recipe:** (1) Succession laws: `/living/{player}/landed_data/laws` — string array; find element matching `*_succession_law` for law type, `*_law` for gender preference. (2) Heir order: `/living/{player}/landed_data/succession` — number array; index 0 is the first heir only under single-heir laws. (2b) Designated heir: `/living/{player}/playable_data/diarchy_successor` — number (verified through jomini; matches the in-game heir under confederate_partition_succession_law). (3) Player's own claims: `/living/{player}/alive_data/claim` — array of `{title, pressed?: true}`; check `.pressed`. (4) Active pretender titles: `/living/{player}/alive_data/pretender` — number array of title IDs (absent if none). (5) To find the player's primary title block: iterate `/landed_titles/landed_titles`, find entry where `.holder === {player}` and `.key` starts with `e_` (or highest tier held); then use that entry's `heir` (ordered heirs) and `claim` (claimant character IDs) arrays.
 
 | Path | jomini type | Meaning | Example |
 |------|-------------|---------|---------|
 | `/living/{player}/landed_data/laws` | array | Active succession laws for the player's primary realm; includes succession type and gender law | `["crown_authority_3", "single_heir_succession_law", "male_preference_law"]` |
-| `/living/{player}/landed_data/succession` | array | Ordered heir priority queue for the player's primary title; index 0 is primary heir | `[198957, 209183, 50523480, ...]` |
+| `/living/{player}/landed_data/succession` | array | Ordered heir priority queue for the player's primary title; index 0 is the first heir only under single-heir laws; not the designated heir under partition laws | `[198957, 209183, 50523480, ...]` |
 | `/living/{player}/alive_data/claim` | array | Claims the player holds on other titles; each: `{title: number, pressed?: true}` | `[{title: 7230}, {title: 938}]` |
 | `/living/{id}/alive_data/claim` | array | Claims held by any living character; same schema as player; `pressed: true` indicates active pressing | `[{title: 4629, pressed: true}, {title: 5268}]` |
 | `/living/{id}/alive_data/pretender` | array | Title IDs the character is actively contesting (e.g. in a faction or claimant war); absent if none | `[4355, 4356, 4361]` |

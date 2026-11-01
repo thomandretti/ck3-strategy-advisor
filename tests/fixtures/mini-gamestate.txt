@@ -50,6 +50,7 @@ living={
 		strength_without_hires=8098.7
 		vassal_contracts={ 5001 }
 	}
+	playable_data={ diarchy_successor=40000 }
 }
 22222={
 	first_name="Adela"
