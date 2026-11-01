@@ -29,11 +29,11 @@ npm run build
 ## Configuration
 
 The server finds your save and game directories from environment variables, with
-WSL/`/mnt/c` discovery as a fallback:
+auto-discovery as a fallback (native Windows, including OneDrive-redirected `Documents`/`Documentos`, then WSL `/mnt/c`):
 
 | Variable       | Purpose                             | Default                                                                                         |
 | -------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `CK3_SAVE_DIR` | Folder containing your `.ck3` saves | auto-discovered at `/mnt/c/Users/*/Documents/Paradox Interactive/Crusader Kings III/save games` |
+| `CK3_SAVE_DIR` | Folder containing your `.ck3` saves | auto-discovered at `%OneDrive%` / `%USERPROFILE%\OneDrive` / `%USERPROFILE%` + `Documents` or `Documentos` + `Paradox Interactive/Crusader Kings III/save games`, else `/mnt/c/Users/*/Documents/...` |
 | `CK3_GAME_DIR` | CK3 game install (for localization) | `/mnt/c/Program Files (x86)/Steam/steamapps/common/Crusader Kings III/game`                     |
 
 `CK3_GAME_DIR` is optional. Without it, titles/traits are shown as their raw game
