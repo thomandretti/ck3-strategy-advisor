@@ -41,7 +41,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "adm-zip": "^0.6.1",
     "jomini": "^0.10.0",
     "zod": "^4.6.7"
