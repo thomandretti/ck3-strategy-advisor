@@ -60,8 +60,7 @@ export function findBestTitle(q: Query, loc: Localizer, name: string): number | 
   const needle = name.trim().toLowerCase();
   if (needle === "") return null;
   const titles = q.at("/landed_titles/landed_titles") as
-    | Record<string, Record<string, unknown>>
-    | undefined;
+    Record<string, Record<string, unknown>> | undefined;
   if (!titles) return null;
 
   let best: { id: number; quality: number; held: number; tier: number } | null = null;
@@ -161,8 +160,7 @@ export function extractForeignRealm(
   let liege: { id: number; name: string } | null = null;
   if (typeof liegeTitleId === "number") {
     const liegeHolder = q.at(`/landed_titles/landed_titles/${liegeTitleId}/holder`) as
-      | number
-      | undefined;
+      number | undefined;
     if (typeof liegeHolder === "number")
       liege = { id: liegeHolder, name: charName(q, liegeHolder) };
   }

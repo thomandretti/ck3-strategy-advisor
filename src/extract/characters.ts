@@ -69,8 +69,7 @@ export function extractCharacter(q: Query, loc: Localizer, id: number): Characte
   // Claims
   const rawClaims =
     (q.at(`/living/${id}/alive_data/claim`) as
-      | Array<{ title: number; pressed?: boolean }>
-      | undefined) ?? [];
+      Array<{ title: number; pressed?: boolean }> | undefined) ?? [];
   const claims = rawClaims.map((c) => ({
     title: resolveTitleName(q, loc, c.title),
     pressed: c.pressed === true,
