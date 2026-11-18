@@ -34,8 +34,7 @@ export function extractExpansion(q: Query, loc: Localizer, wars: War[]): Expansi
   const deJureVassals =
     primaryTitleId !== undefined
       ? ((q.at(`/landed_titles/landed_titles/${primaryTitleId}/de_jure_vassals`) as
-          | number[]
-          | undefined) ?? [])
+          number[] | undefined) ?? [])
       : [];
 
   const deJureUnheld = deJureVassals

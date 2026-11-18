@@ -36,12 +36,10 @@ export function forEachWar(
     const war = warValue as Record<string, unknown>;
     const attP =
       ((war["attacker"] as Record<string, unknown> | undefined)?.["participants"] as
-        | Array<{ character: number }>
-        | undefined) ?? [];
+        Array<{ character: number }> | undefined) ?? [];
     const defP =
       ((war["defender"] as Record<string, unknown> | undefined)?.["participants"] as
-        | Array<{ character: number }>
-        | undefined) ?? [];
+        Array<{ character: number }> | undefined) ?? [];
     const isAtt = attP.some((p) => p.character === subjectId);
     const isDef = !isAtt && defP.some((p) => p.character === subjectId);
     if (!isAtt && !isDef) continue;
