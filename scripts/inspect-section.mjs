@@ -26,7 +26,9 @@ function loadText(f) {
 }
 
 const gs = loadText(file);
-const re = new RegExp(`(^|\\n)\\t*${needle}=`, "g");
+// Match the needle literally: escape regex metacharacters (RegExp.escape needs Node 24+).
+const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const re = new RegExp(`(^|\\n)\\t*${escaped}=`, "g");
 let m,
   found = 0,
   idx = -1;
