@@ -7,6 +7,11 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
+      # One PR for all security fixes: they all edit package-lock.json, so
+      # separate PRs conflict with each other after each merge.
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
     ignore:
       # typescript-eslint 8.x peers on typescript <6.1; drop this once it supports TS 7
       - dependency-name: typescript
